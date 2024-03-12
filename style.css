@@ -1,0 +1,109 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#header {
+    text-align: center;
+    padding: 20px;
+    border-radius:15px;
+    margin:10px;
+    background-color:red;
+    height: 5%;;
+  
+}
+
+#container {
+    display: flex;
+    margin-left: 10px;
+    height: 85%;
+  
+}
+
+#herramientas, #map, #visor {
+    border: 2px solid black;
+    padding: 20px;
+    margin: 5px;
+}
+
+#herramientas {
+    flex: .6;
+
+}
+
+#panel-herramientas{
+    height: 3;
+    background-color: red;
+    margin: -10px;
+    padding: 5px;
+}
+#contenido-herramientas{
+    height: 3;
+    background-color: blue;
+    margin-top: 20px;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding: 5px;
+}
+
+
+
+
+
+
+#map {
+    flex: 2; /* Original size */
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+#visor {
+    flex: 1; /* Size when visible */
+    margin-right: 20px;
+    margin-left: 0px;
+}
+
+.oculto {
+    display: none; /* Hide visor initially */
+}
+/* Style for all buttons */
+button {
+    display: inline-block; /* Display buttons horizontally */
+    margin: 2px;
+    border-radius: 10px;
+    color: blueviolet;
+    background-color: pink;
+    padding: 5px;
+    cursor: pointer; /* Indicate clickable behavior */
+  }
+  
+  /* Style for button hover state */
+  button:hover {
+    background-color: #2f00ff; /* Dark blue on hover */
+  }
+  
+  /* Style for button active state */
+  button:active {
+    background-color: #00ff0d; /* Blue on click (active) */
+    transition: background-color 0.2s ease-in-out; /* Smooth color transition */
+  }
+
+  
+
+  
+
+  
+/* ... (mismo CSS anterior con algunas adiciones) ... */
+
+#contenido-1, #contenido-2 {
+    display: none; /* Hide content by default */
+}
+
+.mostrar {
+    display: block; /* Class to show content */
+}
+
+#replica-botones button {
+    margin: 10px 0; /* Espaciado para los botones replicados */
+}

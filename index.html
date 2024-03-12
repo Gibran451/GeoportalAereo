@@ -1,13 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Estructura de Página</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>CACOTAs</h1>
+    <div id="header">Cabecera</div>
+    <div id="container">
+        <div id="herramientas">
+            <div id="panel-herramientas">
+
+                
+            <button  onclick="cambiarContenido(1)">Acervo</button>
+            <button onclick="cambiarContenido(2)">Herramientas</button>
+            <button onclick="cambiarEstructura()">Visor</button>
+        </div>
+            <div id="contenido-herramientas">
+                <div id="contenido-1">CAPAS DE INFORMACION</div>
+                <div id="contenido-2">HERRAMIENTAS ESPECIFICAS</div>
+            </div>
+        </div>
+        <div id="map">Mapa</div>
+        <div id="visor" class="oculto">
+            <h2>hola mundo</h2>
+            <button onclick="cerrarVisor()">Cerrar Visor</button>
+            <div id="replica-botones" class="oculto"></div> <!-- Contenedor para los botones replicados -->
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
