@@ -5,24 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estructura de Página</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./Libs/ol.css">
+    
 </head>
 <body>
     <div id="header">Cabecera</div>
     <div id="container">
         <div id="herramientas">
             <div id="panel-herramientas">
+            
+                <button class="myButton" onclick="cambiarContenido(1)">Acervo</button>
+                <button class="myButton" onclick="cambiarContenido(2)">Herramientas</button>
+                <button class="myButton" onclick="cambiarEstructura()">Visor</button>
 
-                
-            <button  onclick="cambiarContenido(1)">Acervo</button>
-            <button onclick="cambiarContenido(2)">Herramientas</button>
-            <button onclick="cambiarEstructura()">Visor</button>
-        </div>
+            </div>
             <div id="contenido-herramientas">
                 <div id="contenido-1">CAPAS DE INFORMACION</div>
                 <div id="contenido-2">HERRAMIENTAS ESPECIFICAS</div>
             </div>
+
+            <div id="mapa_base">
+                Mapas Base
+            </div>
         </div>
-        <div id="map">Mapa</div>
+        <div id="map" class='map '></div>
         <div id="visor" class="oculto">
             <h2>hola mundo</h2>
             <button onclick="cerrarVisor()">Cerrar Visor</button>
@@ -30,5 +36,6 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <script src="./Libs/dist/ol.js"></script>
 </body>
 </html>

@@ -51,13 +51,6 @@ function cambiarEstructura() {
         replicaBotones.innerHTML = ''; // Limpiar la réplica de botones
         replicaBotones.classList.remove('oculto');
 
-        // Clonar botones
-        var boton1 = document.querySelector('button[onclick="cambiarContenido(1)"]').cloneNode(true);
-        var boton2 = document.querySelector('button[onclick="cambiarContenido(2)"]').cloneNode(true);
-
-        // Agregar botones clonados al div de réplica
-        replicaBotones.appendChild(boton1);
-        replicaBotones.appendChild(boton2);
 
     } else {
         cerrarVisor();
@@ -79,4 +72,48 @@ function cerrarVisor() {
 cambiarContenido(1);
 
 
+//--------------------BOTON---------------------------------
+// Seleccionar botones por la clase correcta
+const buttons = document.querySelectorAll('.myButton');
 
+// Agregar un event listener a cada botón
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Comprobar si el botón ya tiene la clase 'buttonActive'
+        if (button.classList.contains('buttonActive')) {
+            button.classList.remove('buttonActive'); // Si la tiene, remuévela
+        } else {
+            button.classList.add('buttonActive'); // Si no la tiene, agrégala
+        }
+    });
+});
+
+//APAGAR BOTON ANTERIOR
+document.querySelectorAll('.myButton').forEach(button => {
+    button.addEventListener('click', function() {
+        // "Apagar" todos los botones removiendo la clase 'buttonActive'
+        document.querySelectorAll('.myButton').forEach(b => {
+            b.classList.remove('buttonActive');
+        });
+        
+        // "Encender" el botón clickeado añadiendo la clase 'buttonActive'
+        this.classList.add('buttonActive');
+    });
+});
+//.-----------------------------------------------------------
+window.onload = init;
+
+function init() {
+    const map = new ol.Map({
+        view: new ol.View({
+            center: [0, 0],
+            zoom: 2 // Corregido de 'zoo' a 'zoom'
+        }),
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        target: 'map' // Corregido de 'tarjet' a 'target'
+    });
+}

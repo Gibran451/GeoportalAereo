@@ -11,6 +11,8 @@ body, html {
     margin:10px;
     background-color:red;
     height: 5%;;
+    
+
   
 }
 
@@ -18,35 +20,50 @@ body, html {
     display: flex;
     margin-left: 10px;
     height: 85%;
-  
+  background-color: #0099ff;
+  margin-right: 10px;
 }
 
 #herramientas, #map, #visor {
     border: 2px solid black;
-    padding: 20px;
+    padding: 10px;
     margin: 5px;
 }
 
 #herramientas {
-    flex: .6;
+width: 20%;
 
+    background-color: red;
+    border-radius: 10px;
 }
 
 #panel-herramientas{
-    height: 3;
-    background-color: red;
-    margin: -10px;
+    height: 6%;
+    background-color: rgb(0, 247, 255);
+    margin: -5px;
     padding: 5px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
 }
 #contenido-herramientas{
-    height: 3;
+    height: 70%;
     background-color: blue;
-    margin-top: 20px;
-    margin-left: -10px;
-    margin-right: -10px;
-    padding: 5px;
+    margin-top: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px;
 }
-
+#mapa_base{
+    height: 12%;
+    background-color: rgb(157, 255, 0);
+    margin-top: 12px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 15px;
+}
 
 
 
@@ -56,12 +73,14 @@ body, html {
     flex: 2; /* Original size */
     margin-right: 10px;
     border-radius: 10px;
+   background-color: green;
 }
 
 #visor {
     flex: 1; /* Size when visible */
     margin-right: 20px;
     margin-left: 0px;
+   
 }
 
 .oculto {
@@ -71,11 +90,12 @@ body, html {
 button {
     display: inline-block; /* Display buttons horizontally */
     margin: 2px;
-    border-radius: 10px;
+    border-radius: 15px;
     color: blueviolet;
     background-color: pink;
-    padding: 5px;
+    padding: 8px;
     cursor: pointer; /* Indicate clickable behavior */
+    width: 80%;
   }
   
   /* Style for button hover state */
@@ -84,10 +104,9 @@ button {
   }
   
   /* Style for button active state */
-  button:active {
-    background-color: #00ff0d; /* Blue on click (active) */
-    transition: background-color 0.2s ease-in-out; /* Smooth color transition */
-  }
+  .buttonActive {
+    background-color: #00ff0d; /* O cualquier color que desees para el estado activo */
+}
 
   
 
