@@ -232,13 +232,16 @@ document.querySelectorAll('.map-base-selector').forEach((img) => {
         document.querySelectorAll('.map-base-selector').forEach(i => i.classList.remove('selected'));
         this.classList.add('selected');
 
-        // Cambiar la capa base
+        // Obtener el valor de la capa seleccionada
+        const selectedValue = this.getAttribute('data-value');
+
+        // Cambiar la capa base asegurándose de que solo una esté activa a la vez
         baseLayerGroup.getLayers().forEach((layer) => {
             let layerTitle = layer.get('title');
-            layer.setVisible(layerTitle === this.getAttribute('data-value'));
+            // Si el título de la capa coincide con el valor seleccionado, muestra la capa
+            // De lo contrario, oculta la capa
+            layer.setVisible(layerTitle === selectedValue);
         });
     });
 });
-
 }
-
