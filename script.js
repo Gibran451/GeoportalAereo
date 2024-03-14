@@ -105,7 +105,7 @@ function init() {
         view: new ol.View({
             projection: 'EPSG:4326',
             center: [-102.552784, 23.634501], // Centro en México
-            zoom: 5
+            zoom: 4.9
         }),
         target: 'map', // Señalas el contenedor del mapa
 
@@ -117,7 +117,7 @@ function init() {
     document.getElementById('zoomMexicoBtn').addEventListener('click', function() {
         map.getView().animate({
             center: [-102.552784, 23.634501], // Coordenadas de México
-            zoom: 5, // Nivel de zoom adecuado para abarcar México
+            zoom: 5.3, // Nivel de zoom adecuado para abarcar México
             duration: 1000 // Duración de la animación en milisegundos
         });
     });
@@ -131,7 +131,7 @@ function init() {
 //MAPAS BASE----------------------------------------------------------
 const osm = new ol.layer.Tile({
     source: new ol. source.OSM(),
-    visible:  true,
+    visible:true,
     title: 'OSMStandard'
 })
 
@@ -139,7 +139,7 @@ const opentopomap = new ol.layer.Tile({
     source: new ol.source.XYZ({
       url: 'http://tile.opentopomap.org/{z}/{x}/{y}.png'
     }),
-    visible: true,
+    visible: false,
     title: 'opentopomap'
 });
 
@@ -148,7 +148,7 @@ const carto = new ol.layer.Tile({
     source: new ol.source.XYZ({
       url: 'http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
     }),
-    visible: true,
+    visible: false,
     title: 'Dark'
 });
 
@@ -159,7 +159,7 @@ const arcgis = new ol.layer.Tile({
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 
     }),
-    visible: true,
+    visible: false,
     title: 'ESRI Satelital'
 });
 
@@ -244,4 +244,174 @@ document.querySelectorAll('.map-base-selector').forEach((img) => {
         });
     });
 });
+
+
+//--------------capas
+
+
+
+
+var wmsSourceUrl = 'http://localhost:8080/geoserver/GEOPORTAL/wms';
+
+//
+
+var AerodromosyHelipuertos = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:AerodromosyHelipuertos', 'TILED': true }
+    }),
+    title: 'AerodromosyHelipuertos',
+    visible: false
+});
+
+
+
+
+
+// Zonas Urbanas
+var zonasUrbanas = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:ZonasUrbanas', 'TILED': true }
+    }),
+    title: 'ZonasUrbanas',
+    visible: false
+});
+
+// Volcanes
+var Volcanes = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:Volcanes', 'TILED': true }
+    }),
+    title: 'Volcanes'
+    ,
+    visible: false
+});
+
+// Regiones Aéreas Militares
+var RegionesAereasMilitares = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:RegionesAereasMilitares', 'TILED': true }
+    }),
+    title: 'RegionesAereasMilitares',
+    visible: false
+});
+
+// Municipios
+var Municipios = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:Municipios', 'TILED': true }
+    }),
+    title: 'Municipios',
+    visible: false
+});
+
+// Estatales
+var Estatales = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:Estatales', 'TILED': true }
+    }),
+    title: 'Estatales',
+    visible: false
+});
+
+// Curvas de Nivel
+var CurvasNivel = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:CurvasNivel', 'TILED': true }
+    }),
+    title: 'Curvas de Nivel',
+    visible: false
+});
+
+// Aeropuertos Militares
+var AeropuertosMilitares = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:AeropuertosMilitares', 'TILED': true }
+    }),
+    title: 'AeropuertosMilitares',
+    visible: false
+});
+
+// Aeropuertos
+var Aeropuertos = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:Aeropuertos', 'TILED': true }
+    }),
+    title: 'Aeropuertos',
+    visible: false
+});
+
+
+
+// Espacio Aéreo
+var EspacioAereo = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:Espacio_Aereo', 'TILED': true }
+    }),
+    title: 'EspacioAereo',
+    visible: false
+});
+
+// Añadir las capas al mapa
+map.addLayer(EspacioAereo);
+map.addLayer(RegionesAereasMilitares);
+map.addLayer(Municipios);
+map.addLayer(Estatales);
+map.addLayer(AerodromosyHelipuertos);
+map.addLayer(zonasUrbanas);
+map.addLayer(Volcanes);
+map.addLayer(CurvasNivel);
+map.addLayer(AeropuertosMilitares);
+map.addLayer(Aeropuertos);
+
+
+//----------------------------------------------------------------------
+document.getElementById('ZonasUrbanas').addEventListener('change', function() {
+    zonasUrbanas.setVisible(this.checked);
+});
+
+document.getElementById('AerodromosyHelipuertos').addEventListener('change', function() {
+    AerodromosyHelipuertos.setVisible(this.checked);
+});
+document.getElementById('Volcanes').addEventListener('change', function() {
+    Volcanes.setVisible(this.checked);
+});
+document.getElementById('RegionesAereasMilitares').addEventListener('change', function() {
+    RegionesAereasMilitares.setVisible(this.checked);
+});
+document.getElementById('Municipios').addEventListener('change', function() {
+    Municipios.setVisible(this.checked);
+});
+document.getElementById('Estatales').addEventListener('change', function() {
+    Estatales.setVisible(this.checked);
+});
+
+document.getElementById('CurvasNivel').addEventListener('change', function() {
+    CurvasNivel.setVisible(this.checked);
+});
+document.getElementById('AeropuertosMilitares').addEventListener('change', function() {
+    AeropuertosMilitares.setVisible(this.checked);
+});
+
+document.getElementById('Aeropuertos').addEventListener('change', function() {
+    Aeropuertos.setVisible(this.checked);
+});
+document.getElementById('EspacioAereo').addEventListener('change', function() {
+    EspacioAereo.setVisible(this.checked);
+});
+
+
+
+
+
+
 }
