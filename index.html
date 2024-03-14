@@ -24,11 +24,37 @@
                 <div id="contenido-2">HERRAMIENTAS ESPECIFICAS</div>
             </div>
 
-            <div id="mapa_base">
-                Mapas Base
+    
+
+            <div id="mapa_base" style="display: flex; justify-content: space-around;">
+                      <div id="uno"> 
+                       <img src="path/to/osmImage.png" alt="OpenStreetMap" data-value="OSMStandard" class="map-base-selector">
+                     </div>
+                     <div id="dos">
+                      <img src="path/to/opentopoImage.png" alt="OpenTopoMap" data-value="opentopomap" class="map-base-selector">
+                    </div>
+                    <div id="tres">
+                      <img src="path/to/cartoDarkImage.png" alt="Carto Dark" data-value="Dark" class="map-base-selector">
+                    </div>
+                    <div id="cuatro">
+                      <img src="path/to/esriSatImage.png" alt="ESRI Satelital" data-value="ESRI Satelital" class="map-base-selector" style="border: 2px solid blue;">
+                    </div>
+                    
             </div>
+
+
+
+
+
+
+            
         </div>
-        <div id="map" class='map '></div>
+        <div id="map" class='map '>
+            <button id="zoomMexicoBtn" class="zoom-mexico-btn" title="Hacer zoom a México">
+                <img src="/Imagenes/mx.png" alt="México" style="width: 25px; height: auto;">
+            </button>
+
+        </div>
         <div id="visor" class="oculto">
             <h2>hola mundo</h2>
             <button onclick="cerrarVisor()">Cerrar Visor</button>
@@ -36,6 +62,7 @@
         </div>
     </div>
     <script src="script.js"></script>
-    <script src="./Libs/dist/ol.js"></script>
+    <script src="/Libs/dist/ol.js"></script>
+    
 </body>
 </html>

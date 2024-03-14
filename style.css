@@ -57,12 +57,60 @@ width: 20%;
     padding: 10px;
 }
 #mapa_base{
-    height: 12%;
+    height: 15%;
     background-color: rgb(157, 255, 0);
     margin-top: 12px;
     margin-left: 5px;
     margin-right: 5px;
-    padding: 15px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    
+}
+/*contenedor de los mapa base*/
+#uno{
+height:95% ;
+width:19% ;
+background-color: #0099ff;
+display: inline-block;
+
+}
+#dos{
+    height:95% ;
+width:19% ;
+background-color: #0099ffab;
+display: inline-block;
+
+}
+#tres{
+    height:95% ;
+    width:19% ;
+    background-color: #3cff00;  
+    display: inline-block;
+ 
+}
+#cuatro{
+    height:95% ;
+    width:19% ;
+    background-color: #095385; 
+    display: inline-block;
+ 
+}
+
+
+
+
+.map-base-selector {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.map-base-selector:hover {
+    transform: scale(1.1);
+}
+
+.map-base-selector.selected {
+    border: 2px solid blue;
 }
 
 
@@ -74,6 +122,7 @@ width: 20%;
     margin-right: 10px;
     border-radius: 10px;
    background-color: green;
+   position: relative;
 }
 
 #visor {
@@ -125,4 +174,22 @@ button {
 
 #replica-botones button {
     margin: 10px 0; /* Espaciado para los botones replicados */
+}
+/*BOTON MAPA */
+.zoom-mexico-btn {
+    position: absolute;
+    top: 50px; /* Posiciona el botón en la parte superior del contenedor */
+    right: 10px; /* Posiciona el botón a la derecha del contenedor */
+    border-radius: 50%;
+    border: none;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 24px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que el botón esté por encima del mapa */
 }
