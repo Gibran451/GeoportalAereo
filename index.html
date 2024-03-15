@@ -73,7 +73,32 @@
                     
                 </div>
            
-                <div id="contenido-2">HERRAMIENTAS ESPECIFICAS</div>
+            <div id="contenido-2">
+                
+
+                <button id="addPointBtn">Añadir Punto</button>
+                <button id="deactivateAddPointModeBtn">Desactivar Modo Añadir Punto</button>
+                <button id="removeLayerBtn">Eliminar Capa de Puntos</button>
+
+                <div>
+                    <p>Añadir Punto por Coordenadas (GMS)</p>
+    <!-- Latitud -->
+    <input type="text" id="latDegrees" placeholder="Grados latitud">
+    <input type="text" id="latMinutes" placeholder="Minutos latitud">
+    <input type="text" id="latSeconds" placeholder="Segundos latitud">
+    <!-- Longitud -->
+    <input type="text" id="lonDegrees" placeholder="Grados longitud">
+    <input type="text" id="lonMinutes" placeholder="Minutos longitud">
+    <input type="text" id="lonSeconds" placeholder="Segundos longitud">
+    <button id="addPointByGMSBtn">Añadir Punto (GMS)</button>
+
+    <button id="zoomToSpecificLevelBtn">Zoom Específico a Capa de Puntos</button>
+
+                </div>
+                
+
+                  <br>
+                    <input type="checkbox" id="layerVisibility" checked> Capa Visible</div>
             </div>
 
 
@@ -96,7 +121,7 @@
                       <img src="path/to/cartoDarkImage.png" alt="Carto Dark" data-value="Dark" class="map-base-selector">
                     </div>
                     <div id="cuatro">
-                      <img src="path/to/esriSatImage.png" alt="ESRI " data-value="ESRI Satelital" class="map-base-selector" style="border: 2px solid blue;">
+                      <img src="path/to/esriSatImage.png" alt="ESRI " data-value="ESRI Satelital" class="map-base-selector">
                     </div>
                     
             </div>
@@ -116,7 +141,7 @@
             <div id="replica-botones" class="oculto"></div> <!-- Contenedor para los botones replicados -->
         </div>
     </div>
-    <script src="script.js"></script>
+    <script  src="script.js"></script>
     <script src="./Libs/dist/ol.js"></script>
     
 </body>

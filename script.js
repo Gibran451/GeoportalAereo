@@ -190,7 +190,7 @@ scaleLineElement.style.right = '10px';
 
 
 
-//----------------MINI MAPA ----
+//----------------MINI MAPA -----------------------------
 
 
 const overviewMapControl = new ol.control.OverviewMap({
@@ -246,7 +246,7 @@ document.querySelectorAll('.map-base-selector').forEach((img) => {
 });
 
 
-//--------------capas
+//--------------capas----------------------------------------------
 
 
 
@@ -410,8 +410,110 @@ document.getElementById('EspacioAereo').addEventListener('change', function() {
 });
 
 
+//--------------------------------------------punto capa--------------------------------------------------------
 
 
+var vectorSource = new ol.source.Vector({});
+var vectorLayer = new ol.layer.Vector({
+  source: vectorSource
+});
+map.addLayer(vectorLayer);
+
+var addPointMode = false; // Estado del modo para añadir puntos
+//Activar modo aedicion
+document.getElementById('addPointBtn').addEventListener('click', function() {
+  addPointMode = true; // Alternar modo
+});
+
+
+//boton  color
+document.getElementById('addPointBtn').addEventListener('click', function() {
+    this.classList.toggle('clicked');
+  });
+
+
+
+  document.getElementById('deactivateAddPointModeBtn').addEventListener('click', function() {
+    addPointMode = false;
+    document.getElementById('addPointBtn').classList.remove('clicked');
+  });
+  
+
+
+
+map.on('singleclick', function(evt) {
+    if (addPointMode) {
+      vectorSource.clear(); // Limpia la fuente vectorial antes de añadir un nuevo punto
+      var point = new ol.geom.Point(evt.coordinate);
+      var pointFeature = new ol.Feature(point);
+      vectorSource.addFeature(pointFeature);
+    }
+  });
+  
+document.getElementById('layerVisibility').addEventListener('change', function() {
+  vectorLayer.setVisible(this.checked);
+});
+
+//eliminar capa de punto--------------------------------------
+document.getElementById('removeLayerBtn').addEventListener('click', function() {
+    vectorSource.clear(); // Limpia la fuente vectorial, eliminando todos los puntos
+  });
+
+
+//agregar punto por coordenadas--------------------------------
+// Función para convertir GMS a grados decimales
+function GMS_to_decimal(degrees, minutes, seconds) {
+    var decimal = Math.abs(degrees) + minutes / 60 + seconds / 3600;
+    return degrees < 0 ? -decimal : decimal;
+}
+
+// Event listener para el botón de añadir punto por coordenadas GMS
+document.getElementById('addPointByGMSBtn').addEventListener('click', function() {
+    var latDegrees = parseFloat(document.getElementById('latDegrees').value);
+    var latMinutes = parseFloat(document.getElementById('latMinutes').value);
+    var latSeconds = parseFloat(document.getElementById('latSeconds').value);
+
+    var lonDegrees = parseFloat(document.getElementById('lonDegrees').value);
+    var lonMinutes = parseFloat(document.getElementById('lonMinutes').value);
+    var lonSeconds = parseFloat(document.getElementById('lonSeconds').value);
+
+    // Convertir GMS a decimal
+    var latDecimal = GMS_to_decimal(latDegrees, latMinutes, latSeconds);
+    var lonDecimal = GMS_to_decimal(lonDegrees, lonMinutes, lonSeconds);
+
+    // Verificar validez de las conversiones
+    if (!isNaN(latDecimal) && !isNaN(lonDecimal)) {
+        // Crear el punto y la característica (feature)
+        var pointFeature = new ol.Feature(new ol.geom.Point([lonDecimal, latDecimal]));
+        // Añadir el punto a la fuente vectorial existente
+        vectorSource.clear();
+        vectorSource.addFeature(pointFeature);
+    } else {
+        alert('Por favor, ingresa valores válidos para latitud y longitud.');
+    }
+});
+
+//-------hacer zoom a capa
+document.getElementById('zoomToSpecificLevelBtn').addEventListener('click', function() {
+    if (vectorSource.getFeatures().length > 0) {
+        // Calcula el extent que contiene todos los features de la fuente vectorial
+        var layerExtent = vectorSource.getExtent();
+        // Calcula el centro del extent
+        var center = ol.extent.getCenter(layerExtent);
+
+        // Establece el centro de la vista al centro del extent y un nivel de zoom específico
+        map.getView().animate({
+            center: center,
+            zoom: 10, // Ajusta este valor según necesites
+            duration: 1000 // Duración de la animación en milisegundos
+        });
+    } else {
+        alert('No hay puntos en la capa para hacer zoom.');
+    }
+});
 
 
 }
+//--------------------------------------- FIN DEL MAPA
+
+  

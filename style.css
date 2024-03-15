@@ -195,3 +195,6 @@ button {
     align-items: center;
     z-index: 1000; /* Asegura que el botón esté por encima del mapa */
 }
+.clicked {
+    background-color: blue; /* Color después del clic */
+  }
