@@ -1,3 +1,6 @@
+
+
+//---------------------------------DESPLEGAR VISOR-------------------------------------
 function cambiarContenido(num) {
     // Ocultar ambos contenidos
     document.getElementById('contenido-1').style.display = 'none';
@@ -27,7 +30,7 @@ function cambiarEstructura() {
     }
 }
 
-// Inicializar con el botón 1 activo
+    // Inicializar con el botón 1 activo
 cambiarContenido(1);
 
 function cambiarContenido(num) {
@@ -55,17 +58,14 @@ function cambiarEstructura() {
         cerrarVisor();
     }
 }
-
 function cerrarVisor() {
-
-
     // Restaurar el tamaño original del mapa y ocultar el visor
     map.style.flex = '3';
     visor.classList.add('oculto');
     replicaBotones.classList.add('oculto');
 }
 
-// Inicializar con el botón 1 activo
+    // Inicializar con el botón 1 activo
 cambiarContenido(1);
 
 
@@ -163,18 +163,15 @@ const arcgis = new ol.layer.Tile({
     title: 'ESRI Satelital'
 });
 
-
-//ESCALA_-----------
-
-// Layer Group
+//  Variable de los Mapas Base
 const baseLayerGroup = new ol.layer.Group({
     layers: [
      osm,opentopomap, carto,arcgis
     ]
   })
  map.addLayer(baseLayerGroup);
- 
-// ----------ESCALA
+
+// ----------ESCALA-GRAFICA---------------------------------
 const scaleControl = new ol.control.ScaleLine({
     units: 'metric'
 });
@@ -190,7 +187,7 @@ scaleLineElement.style.right = '10px';
 
 
 
-//----------------MINI MAPA -----------------------------
+//---------------------------MINI MAPA -----------------------------
 
 
 const overviewMapControl = new ol.control.OverviewMap({
@@ -214,7 +211,7 @@ const overviewMapControl = new ol.control.OverviewMap({
   document.querySelector('.ol-overviewmap').style.right = 'auto';
 
 
-  //PANTALLA COMPLETA--------------------------------------------
+//-----------------------PANTALLA COMPLETA--------------------------------------------
   const fullScreenControl = new ol.control.FullScreen({
     // Opciones de configuración del FullScreen
     tipLabel: 'Pantalla completa' // Etiqueta al pasar el mouse
@@ -225,7 +222,7 @@ const overviewMapControl = new ol.control.OverviewMap({
 
 
 
-//MAPAS BASE sWICHER-------------------------------------
+//-----------------------------MAPAS BASE sWICHER-------------------------------------
 document.querySelectorAll('.map-base-selector').forEach((img) => {
     img.addEventListener('click', function() {
         // Resaltar la imagen seleccionada
@@ -246,14 +243,11 @@ document.querySelectorAll('.map-base-selector').forEach((img) => {
 });
 
 
-//--------------capas----------------------------------------------
-
-
-
+//-------------------------------------CAPAS-----------------------------------------
 
 var wmsSourceUrl = 'http://localhost:8080/geoserver/GEOPORTAL/wms';
 
-//
+//--AerodromosyHelipuertos
 
 var AerodromosyHelipuertos = new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -263,10 +257,6 @@ var AerodromosyHelipuertos = new ol.layer.Tile({
     title: 'AerodromosyHelipuertos',
     visible: false
 });
-
-
-
-
 
 // Zonas Urbanas
 var zonasUrbanas = new ol.layer.Tile({
@@ -410,7 +400,7 @@ document.getElementById('EspacioAereo').addEventListener('change', function() {
 });
 
 
-//--------------------------------------------punto capa--------------------------------------------------------
+//--------------------------------------------CREAR CAPA CON UN PUNTO--------------------------------------------------------
 
 
 var vectorSource = new ol.source.Vector({});
@@ -419,28 +409,29 @@ var vectorLayer = new ol.layer.Vector({
 });
 map.addLayer(vectorLayer);
 
-var addPointMode = false; // Estado del modo para añadir puntos
-//Activar modo aedicion
+
+
+//--------------------BOTON AÑADIR PUNTO ------------------------------------
+var addPointMode = false; // Estado inicial del modo para añadir puntos
+
+// Activar o desactivar modo de edición
 document.getElementById('addPointBtn').addEventListener('click', function() {
-  addPointMode = true; // Alternar modo
+  addPointMode = !addPointMode; // Alternar modo entre true y false
+  
+  // Opcional: Actualizar el texto del botón para reflejar el estado actual
+  this.textContent = addPointMode ? "Cancelar Añadir Punto" : "Añadir Punto";
 });
 
 
-//boton  color
+//Cambia el  color del boton hasta hacer click d enuevo 
 document.getElementById('addPointBtn').addEventListener('click', function() {
     this.classList.toggle('clicked');
+
+    
   });
 
-
-
-  document.getElementById('deactivateAddPointModeBtn').addEventListener('click', function() {
-    addPointMode = false;
-    document.getElementById('addPointBtn').classList.remove('clicked');
-  });
   
-
-
-
+// Solo permite poner un punto
 map.on('singleclick', function(evt) {
     if (addPointMode) {
       vectorSource.clear(); // Limpia la fuente vectorial antes de añadir un nuevo punto
@@ -460,14 +451,14 @@ document.getElementById('removeLayerBtn').addEventListener('click', function() {
   });
 
 
-//agregar punto por coordenadas--------------------------------
-// Función para convertir GMS a grados decimales
+//-------AGREGAR PUNTO POR COORDENADAS--------------------------------
+        // Función para convertir GMS a grados decimales
 function GMS_to_decimal(degrees, minutes, seconds) {
     var decimal = Math.abs(degrees) + minutes / 60 + seconds / 3600;
     return degrees < 0 ? -decimal : decimal;
 }
 
-// Event listener para el botón de añadir punto por coordenadas GMS
+        // Event listener para el botón de añadir punto por coordenadas GMS
 document.getElementById('addPointByGMSBtn').addEventListener('click', function() {
     var latDegrees = parseFloat(document.getElementById('latDegrees').value);
     var latMinutes = parseFloat(document.getElementById('latMinutes').value);
@@ -477,11 +468,11 @@ document.getElementById('addPointByGMSBtn').addEventListener('click', function()
     var lonMinutes = parseFloat(document.getElementById('lonMinutes').value);
     var lonSeconds = parseFloat(document.getElementById('lonSeconds').value);
 
-    // Convertir GMS a decimal
+         // Convertir GMS a decimal
     var latDecimal = GMS_to_decimal(latDegrees, latMinutes, latSeconds);
     var lonDecimal = GMS_to_decimal(lonDegrees, lonMinutes, lonSeconds);
 
-    // Verificar validez de las conversiones
+         // Verificar validez de las conversiones
     if (!isNaN(latDecimal) && !isNaN(lonDecimal)) {
         // Crear el punto y la característica (feature)
         var pointFeature = new ol.Feature(new ol.geom.Point([lonDecimal, latDecimal]));
@@ -493,7 +484,7 @@ document.getElementById('addPointByGMSBtn').addEventListener('click', function()
     }
 });
 
-//-------hacer zoom a capa
+//-------HACER ZOOM A CAPA DE PUNTO---------------
 document.getElementById('zoomToSpecificLevelBtn').addEventListener('click', function() {
     if (vectorSource.getFeatures().length > 0) {
         // Calcula el extent que contiene todos los features de la fuente vectorial
@@ -514,6 +505,5 @@ document.getElementById('zoomToSpecificLevelBtn').addEventListener('click', func
 
 
 }
-//--------------------------------------- FIN DEL MAPA
+//--------------------------------------- FIN DEL MAPA---------------------
 
-  

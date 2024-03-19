@@ -137,6 +137,8 @@ display: inline-block;
 .oculto {
     display: none; /* Hide visor initially */
 }
+
+
 /* Style for all buttons */
 button {
     display: inline-block; /* Display buttons horizontally */
@@ -160,12 +162,6 @@ button {
 }
 
   
-
-  
-
-  
-/* ... (mismo CSS anterior con algunas adiciones) ... */
-
 #contenido-1, #contenido-2 {
     display: none; /* Hide content by default */
 }
@@ -174,9 +170,7 @@ button {
     display: block; /* Class to show content */
 }
 
-#replica-botones button {
-    margin: 10px 0; /* Espaciado para los botones replicados */
-}
+
 /*BOTON MAPA */
 .zoom-mexico-btn {
     position: absolute;
@@ -198,3 +192,4 @@ button {
 .clicked {
     background-color: blue; /* Color después del clic */
   }
+
