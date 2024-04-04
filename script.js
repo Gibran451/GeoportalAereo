@@ -248,6 +248,21 @@ document.querySelectorAll('.map-base-selector').forEach((img) => {
 var wmsSourceUrl = 'http://localhost:8080/geoserver/GEOPORTAL/wms';
 
 //--AerodromosyHelipuertos
+var DEM30 = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: wmsSourceUrl,
+        params: { 'LAYERS': 'GEOPORTAL:DEM30', 'TILED': true }
+    }),
+    title: 'DEM30',
+    visible: false
+});
+
+
+ 
+
+
+
+
 
 var AerodromosyHelipuertos = new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -319,6 +334,8 @@ var CurvasNivel = new ol.layer.Tile({
     visible: false
 });
 
+
+
 // Aeropuertos Militares
 var AeropuertosMilitares = new ol.layer.Tile({
     source: new ol.source.TileWMS({
@@ -351,7 +368,14 @@ var EspacioAereo = new ol.layer.Tile({
     visible: false
 });
 
+
+
+
+
+
+
 // Añadir las capas al mapa
+map.addLayer(DEM30);
 map.addLayer(EspacioAereo);
 map.addLayer(RegionesAereasMilitares);
 map.addLayer(Municipios);
@@ -360,14 +384,26 @@ map.addLayer(AerodromosyHelipuertos);
 map.addLayer(zonasUrbanas);
 map.addLayer(Volcanes);
 map.addLayer(CurvasNivel);
+
 map.addLayer(AeropuertosMilitares);
 map.addLayer(Aeropuertos);
 
 
-//----------------------------------------------------------------------
+
+document.getElementById('DEM30').addEventListener('change', function() {
+    DEM30.setVisible(this.checked);
+
+
+    
+});
+
+
+
 document.getElementById('ZonasUrbanas').addEventListener('change', function() {
     zonasUrbanas.setVisible(this.checked);
 });
+
+
 
 document.getElementById('AerodromosyHelipuertos').addEventListener('change', function() {
     AerodromosyHelipuertos.setVisible(this.checked);
@@ -387,7 +423,26 @@ document.getElementById('Estatales').addEventListener('change', function() {
 
 document.getElementById('CurvasNivel').addEventListener('change', function() {
     CurvasNivel.setVisible(this.checked);
+  
 });
+
+
+
+
+
+document.getElementById('aplicarFiltro').addEventListener('click', function() {
+    var altura = document.getElementById('alturaInput').value;
+    var nuevoFiltro = 'CONTOUR > ' + altura;
+    CurvasNivel.getSource().updateParams({'CQL_FILTER': nuevoFiltro});
+});
+
+
+
+
+
+
+
+
 document.getElementById('AeropuertosMilitares').addEventListener('change', function() {
     AeropuertosMilitares.setVisible(this.checked);
 });
@@ -504,6 +559,120 @@ document.getElementById('zoomToSpecificLevelBtn').addEventListener('click', func
 });
 
 
+
+// crear buffers.--------------------------------------
+
+document.getElementById('createBuffer').addEventListener('click', function() {
+    var distanceInMeters = parseFloat(document.getElementById('bufferDistance').value);
+
+    // Obtiene el último punto añadido a la fuente vectorial
+    var lastPointFeature = vectorSource.getFeatures()[vectorSource.getFeatures().length - 1];
+    var pointCoordinates = lastPointFeature.getGeometry().getCoordinates();
+
+    var circleGeometry = new ol.geom.Circle(pointCoordinates, distanceInMeters / 111319.488); // Aproximación en EPSG:4326
+    var bufferFeature = new ol.Feature(circleGeometry);
+
+    // Si existe una capa de buffer, la actualiza; si no, la crea
+    if (window.bufferLayer) {
+        window.bufferLayer.getSource().clear(); // Limpia la capa existente
+        window.bufferLayer.getSource().addFeature(bufferFeature);
+    } else {
+        window.bufferLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [bufferFeature],
+            }),
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'red',
+                    width: 2,
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 255, 0.1)',
+                }),
+            }),
+        });
+        map.addLayer(window.bufferLayer);
+    }
+});
+//ELIMINAR BUFFER
+document.getElementById('limpiarBuffer').addEventListener('click', function() {
+    if (window.bufferLayer) {
+        map.removeLayer(window.bufferLayer); // Elimina la capa de buffer del mapa
+        window.bufferLayer = null; // Opcional: establecer la variable a null para limpieza
+    }
+});
+
+
+
+
+
+
+
+
 }
 //--------------------------------------- FIN DEL MAPA---------------------
 
+//--------------Barra para hacer mas grande o chico los contenedores-----
+document.addEventListener('DOMContentLoaded', function() {
+    const dragger = document.getElementById('dragger');
+    const herramientas = document.getElementById('herramientas');
+    const container = document.getElementById('container');
+    let isResizing = false;
+  
+    dragger.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      isResizing = true;
+      let startX = e.clientX;
+      let startWidth = herramientas.offsetWidth;
+  
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+  
+      function onMouseMove(e) {
+        if (!isResizing) return;
+        // Calcula la diferencia de movimiento
+        const dx = e.clientX - startX;
+        // Calcula el nuevo ancho basado en el movimiento inicial y el desplazamiento
+        let newWidth = startWidth + dx;
+        
+        // Convierte el 17% del contenedor padre a píxeles para el mínimo ancho
+        const minWidth = container.offsetWidth * 0.17;
+        // Ajusta el nuevo ancho para que no sea menor que el 17% del contenedor padre
+        newWidth = Math.max(newWidth, minWidth);
+        // Asegúrate también de que 'herramientas' no ocupe más del contenedor menos el mínimo permitido para el otro pane
+        newWidth = Math.min(newWidth, container.offsetWidth - minWidth);
+  
+        herramientas.style.width = `${newWidth}px`;
+      }
+  
+      function onMouseUp() {
+        // Detiene el redimensionamiento
+        isResizing = false;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+    });
+  });
+
+  
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggleButton');
+    const herramientas = document.getElementById('herramientas');
+    // Almacena el estilo de visualización original de "herramientas"
+    let displayStyleOriginal = window.getComputedStyle(herramientas).display;
+  
+    toggleButton.addEventListener('click', function() {
+      if (herramientas.style.display !== 'none') {
+        herramientas.style.display = 'none'; // Oculta "herramientas"
+        toggleButton.textContent = 'I';
+      } else {
+        // Restablece el contenedor "herramientas" a su estilo de visualización original
+        herramientas.style.display = displayStyleOriginal;
+        toggleButton.textContent = 'I';
+      }
+    });
+  });
+  

@@ -24,40 +24,68 @@ body, html {
   margin-right: 10px;
 }
 
-#herramientas, #map, #visor {
+#map, #visor {
     border: 2px solid black;
     padding: 10px;
     margin: 5px;
 }
 
 #herramientas {
-width: 20%;
-
+    width: 23%;
+    padding: 10px;
+    margin:10px ;
     background-color: red;
     border-radius: 10px;
 }
 
+
 #panel-herramientas{
     height: 6%;
+    width: 93%;
     background-color: rgb(0, 247, 255);
-    margin: -5px;
+   margin-right: 10px;
+   margin-left: 5px;
+   margin-bottom: 10px;
     padding: 5px;
     border-radius: 10px;
-    display: flex;
+    display: in;
     justify-content: center;
     align-items: center;
-   
+    position: flex;
+    text-align: center;
 }
 #contenido-herramientas{
     height: 70%;
     background-color: blue;
-    margin-top: 15px;
-    margin-left: 5px;
     margin-right: 5px;
-    padding: 10px;
-    position: relative;
+    margin-left: 5px;
+    display: flex;
+    position:relative ;
+    overflow: auto;
     
 }
+
+  
+#contenido-1{
+
+    background-color: #3cff00;
+    height: 100%;
+    width: 100%;
+    display: flex;
+
+}
+
+#contenido-2 {
+    display: none; /* Hide content by default */
+    overflow: auto;
+    background-color: #466848;
+
+}
+
+
+
+
+
 #mapa_base{
     height: 15%;
     background-color: rgb(157, 255, 0);
@@ -70,6 +98,10 @@ width: 20%;
     
 }
 /*contenedor de los mapa base*/
+
+#mde{
+    
+}
 #uno{
 height:95% ;
 width:19% ;
@@ -98,6 +130,30 @@ display: inline-block;
     display: inline-block;
  
 }
+
+#capas{
+    background-color: rgb(128, 64, 64);
+    display: flex;
+    overflow: auto;
+    height: 75% ;
+    position: flex;
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+#MDE{
+    position:absolute;
+    background-color: rgb(99, 8, 8);
+    height: 20%;
+    width: 94%;
+
+    margin-left: 3%;
+
+
+
+}
+
 
 
 
@@ -139,17 +195,21 @@ display: inline-block;
 }
 
 
-/* Style for all buttons */
-button {
-    display: inline-block; /* Display buttons horizontally */
-    margin: 2px;
+.myButton{
+    background-color: #bdbdbd;
+    color: rgb(179, 46, 46);
+    font-size: 12px;
     border-radius: 15px;
-    color: blueviolet;
-    background-color: pink;
-    padding: 8px;
-    cursor: pointer; /* Indicate clickable behavior */
-    width: 80%;
-  }
+    border: none;
+    width: 27%;
+    height: 100%;
+}
+#boton_h{
+    width: 35%;
+}
+
+/* Style for all buttons */
+
   
   /* Style for button hover state */
   button:hover {
@@ -158,13 +218,10 @@ button {
   
   /* Style for button active state */
   .buttonActive {
-    background-color: #00ff0d; /* O cualquier color que desees para el estado activo */
+    background-color: #ff1e00; /* O cualquier color que desees para el estado activo */
 }
 
-  
-#contenido-1, #contenido-2 {
-    display: none; /* Hide content by default */
-}
+
 
 .mostrar {
     display: block; /* Class to show content */
@@ -193,3 +250,59 @@ button {
     background-color: blue; /* Color después del clic */
   }
 
+#removeLayerBtn{
+width: 45%;
+}
+
+
+#zoomToSpecificLevelBtn{
+    width: 45%;
+}
+
+
+#addPointBtn{
+    width: 95%;
+}
+
+
+#dragger {
+    background: #ccc;
+    cursor: ew-resize;
+    width: 5px; /* Puedes ajustar el ancho del dragger aquí */
+  }
+
+  .herramientas, .map {
+    flex-grow: 1;
+    overflow: auto;
+  }
+
+  /*boton   para ocultar herramientas*/
+  #dragger {
+    position: relative; /* Permite el posicionamiento absoluto del botón dentro */
+    display: flex;
+    justify-content: center; /* Centra el botón horizontalmente */
+    align-items: center; /* Centra el botón verticalmente */
+    background-color:#c7c7c7;
+    margin-right: 5px;
+    width: 4px;
+}
+  
+  #toggleButton {
+    position: absolute;
+    border-radius: 4px;
+    background-color:  #c7c7c7;
+    justify-content: center;
+    height: 15px;
+
+  border: none;
+    display: flex;
+    z-index: 3;
+    cursor: pointer;
+
+    /* Centrado ya manejado por flexbox en #dragger, pero puedes ajustar el botón si es necesario */
+  }
+  
+  #toggleButton:hover{
+    background-color: #868686;
+
+  }

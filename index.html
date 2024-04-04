@@ -15,17 +15,18 @@
             <div id="panel-herramientas">
             
                 <button class="myButton" onclick="cambiarContenido(1)">Acervo</button>
-                <button class="myButton" onclick="cambiarContenido(2)">Herramientas</button>
+                <button id="boton_h" class="myButton" onclick="cambiarContenido(2)">Herramientas</button>
                 <button class="myButton" onclick="cambiarEstructura()">Visor</button>
 
             </div>
             <div id="contenido-herramientas">
-
-
-                
+           <!--"Acervo"-->     
                 <div id="contenido-1">
+
+                <div id="capas">
                     <div id="layer-switcher" >
                         <h2>Layer Switcher</h2>
+                       
                         <div>
                             <input type="checkbox" id="ZonasUrbanas" >
                             <label for="ZonasUrbanas">Zonas Urbanas</label>
@@ -56,7 +57,20 @@
                         <div>
                             <input type="checkbox" id="CurvasNivel">
                             <label for="CurvasNivel">Curvas de Nivel</label>
+
+                            <label for="alturaInput">Altura mínima (m):</label>
+                            <input type="number" id="alturaInput" value="1000">
+                        
+                            <!-- Botones para aplicar el filtro a la capa existente y para crear una nueva capa filtrada -->
+                            <button id="aplicarFiltro">Aplicar Filtro</button>
+
                         </div>
+
+
+
+
+
+                        
                         <div>
                             <input type="checkbox" id="AeropuertosMilitares">
                             <label for="AeropuertosMilitares">Aeropuertos Militares</label>
@@ -72,14 +86,39 @@
                     </div>
                     
                 </div>
-           
-            <div id="contenido-2">
+                <div id="MDE">
+
+
+                    <div id="mde"> 
+                        <div>
+                            <input type="checkbox" id="DEM30" >
+                            <label for="DEM30">Modelo Digital de Elevaciones</label>
+
+                             <!-- Input para que el usuario ingrese el valor de altura para el filtro -->
+
+
+
+
+
+                        </div>
+
+                       
+                      </div>
+
+
+                </div>
+
+                </div>
+             
+           <!-- "Herramientas"-->
+                 <div id="contenido-2">
                 
 
                 <button id="addPointBtn">Añadir Punto</button>
 
                   
-                    <button id="removeLayerBtn">Eliminar Capa de Puntos</button>
+                    <button id="removeLayerBtn">Eliminar</button>
+                    <button id="zoomToSpecificLevelBtn">Zoom </button>
 
 
 
@@ -95,15 +134,21 @@
     <input type="text" id="lonSeconds" placeholder="Segundos longitud">
     <button id="addPointByGMSBtn">Añadir Punto (GMS)</button>
 
-    <button id="zoomToSpecificLevelBtn">Zoom Específico a Capa de Puntos</button>
+                </div>
+            
+                  <br>
+                    <input type="checkbox" id="layerVisibility" checked> Capa Visible
+                
+                <br>
+                    <label for="bufferDistance">Distancia del Buffer (metros):</label>
+                    <input type="number" id="bufferDistance" value="1000">
+                    <button id="createBuffer">Crear Buffer</button>
+                    <button id="limpiarBuffer">Limpiar Buffer</button>
+
 
                 </div>
-                
-
-                  <br>
-                    <input type="checkbox" id="layerVisibility" checked> Capa Visible</div>
-            </div>
-
+                 </div>
+<!-- FIN DE HERRAMIENTAS-->
             <div id="mapa_base" style="display: flex; justify-content: space-around;">
                       <div id="uno"> 
                        <img src="path/to/osmImage.png" alt="OSM" data-value="OSMStandard" class="map-base-selector">
@@ -121,12 +166,19 @@
             </div>
 
         </div>
+
+        <div id="dragger">
+            <button id="toggleButton"></button>
+          </div>
+          
         <div id="map" class='map '>
             <button id="zoomMexicoBtn" class="zoom-mexico-btn" title="Hacer zoom a México">
                 <img src="./Imagenes/mx.png" alt="México" style="width: 25px; height: auto;">
             </button>
 
         </div>
+
+      
         <div id="visor" class="oculto">
             <h2>hola mundo</h2>
             <button onclick="cerrarVisor()">Cerrar Visor</button>
