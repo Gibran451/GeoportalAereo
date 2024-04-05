@@ -327,7 +327,7 @@ var Estatales = new ol.layer.Tile({
 // Curvas de Nivel
 var CurvasNivel = new ol.layer.Tile({
     source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/wms?service=WMS&version=1.1.0&request=GetMap&layers=GEOPORTAL%3ACurvasNivel&bbox=-117.10569942499995%2C14.895713890000025%2C-88.86093502799999%2C32.64463432800005&width=768&height=482&srs=EPSG%3A4326&styles=&format=application/openlayers',
         params: { 'LAYERS': 'GEOPORTAL:CurvasNivel', 'TILED': true }
     }),
     title: 'Curvas de Nivel',
