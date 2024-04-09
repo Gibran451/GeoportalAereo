@@ -689,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
             minutos = "10";
         } else {
 
-        if (minutos >= 25s) {
+        if (minutos >= 25) {
             // Si es después de los 20 minutos de la hora, usa la hora en punto
             minutos = "00";
         } else {
