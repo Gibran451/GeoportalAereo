@@ -153,6 +153,7 @@ const carto = new ol.layer.Tile({
 });
 
 
+
 const arcgis = new ol.layer.Tile({
 
     source: new ol.source.XYZ({
@@ -162,6 +163,8 @@ const arcgis = new ol.layer.Tile({
     visible: false,
     title: 'ESRI Satelital'
 });
+
+
 
 //  Variable de los Mapas Base
 const baseLayerGroup = new ol.layer.Group({
@@ -658,21 +661,74 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-  document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.getElementById('toggleButton');
-    const herramientas = document.getElementById('herramientas');
-    // Almacena el estilo de visualización original de "herramientas"
-    let displayStyleOriginal = window.getComputedStyle(herramientas).display;
   
-    toggleButton.addEventListener('click', function() {
-      if (herramientas.style.display !== 'none') {
-        herramientas.style.display = 'none'; // Oculta "herramientas"
-        toggleButton.textContent = 'I';
-      } else {
-        // Restablece el contenedor "herramientas" a su estilo de visualización original
-        herramientas.style.display = displayStyleOriginal;
-        toggleButton.textContent = 'I';
-      }
-    });
-  });
-  
+
+  function generarUrlImagenBasadaEnHoraUTC() {
+    // Obtiene la fecha y hora actual en UTC
+    const ahora = new Date(); // Fecha actual en hora local
+    const ahoraUTC = new Date(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate(), ahora.getUTCHours(), ahora.getUTCMinutes(), ahora.getUTCSeconds());
+
+    let año = ahoraUTC.getFullYear();
+    let mes = String(ahoraUTC.getMonth() + 1).padStart(2, '0'); // getMonth() es 0-index
+    let dia = String(ahoraUTC.getDate()).padStart(2, '0');
+    let hora = ahoraUTC.getHours();
+    let minutos = ahoraUTC.getMinutes();
+
+    if (minutos >= 55) {
+        // Si es después de los 20 minutos de la hora, usa la hora en punto
+        minutos = "30";
+    } else {
+
+        if (minutos >= 45) {
+            // Si es después de los 20 minutos de la hora, usa la hora en punto
+            minutos = "20";
+        } else {
+
+        if (minutos >= 35) {
+            // Si es después de los 20 minutos de la hora, usa la hora en punto
+            minutos = "10";
+        } else {
+
+        if (minutos >= 25s) {
+            // Si es después de los 20 minutos de la hora, usa la hora en punto
+            minutos = "00";
+        } else {
+
+        // Si es antes de los 20 minutos de la hora, usa 50 minutos de la hora anterior
+        if (hora === 0) {
+            // Ajuste para medianoche
+            hora = 23;
+            // Ajustar día y potencialmente mes/año si es necesario
+            // Esto es más complejo si es el primer día del mes/año, pero para simplificar:
+            ahoraUTC.setDate(ahoraUTC.getDate() - 1);
+            año = ahoraUTC.getFullYear();
+            mes = String(ahoraUTC.getMonth() + 1).padStart(2, '0');
+            dia = String(ahoraUTC.getDate()).padStart(2, '0');
+        } else {
+            hora -= 1; // Hora anterior
+        }
+        minutos = "50";
+    }
+}
+}
+}
+
+    hora = String(hora).padStart(2, '0');
+
+    const url = `http://132.247.103.145/goes16/abi/vistas/rgb/mexico/${año}.${mes}.${dia}.${hora}.${minutos}.goes-16.rgb_ch13.png`;
+    return url;
+}
+
+function mostrarImagen() {
+    const urlImagen = generarUrlImagenBasadaEnHoraUTC();
+    console.log("Intentando cargar la imagen:", urlImagen); // Para depuración
+    const imgElement = document.createElement('img');
+    imgElement.src = urlImagen;
+    imgElement.onerror = function() {
+        console.error('La imagen no pudo cargarse. Intenta con otra hora.');
+        // Intenta con una hora anterior o maneja el error como sea apropiado
+    };
+    document.body.appendChild(imgElement); // O el elemento donde quieras añadir la imagen
+}
+
+mostrarImagen();
