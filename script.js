@@ -372,6 +372,18 @@ var EspacioAereo = new ol.layer.Tile({
 });
 
 
+var bounds = ol.proj.transformExtent([-121.35, 9.5, -83.94, 32.65], 'EPSG:4326', 'EPSG:3857');
+
+ var imageLayer = new ol.layer.Image({
+    source: new ol.source.ImageStatic({
+        url: generarUrlImagenBasadaEnHoraUTC(),
+        projection: 'EPSG:3857',
+        
+        imageExtent: bounds
+    }),
+    opacity:.6, // Ajusta la transparencia como necesites
+    visible:false
+});
 
 
 
@@ -387,26 +399,34 @@ map.addLayer(AerodromosyHelipuertos);
 map.addLayer(zonasUrbanas);
 map.addLayer(Volcanes);
 map.addLayer(CurvasNivel);
-
+map.addLayer(imageLayer);
 map.addLayer(AeropuertosMilitares);
 map.addLayer(Aeropuertos);
+
+
+
+DEM30.setZIndex(2);
+EspacioAereo.setZIndex(1);
+RegionesAereasMilitares.setZIndex(3);
+Municipios.setZIndex(5);
+Estatales.setZIndex(4);
+zonasUrbanas.setZIndex(6);
+Volcanes.setZIndex(9);
+CurvasNivel.setZIndex(7);
+Aeropuertos.setZIndex(8);
+imageLayer.setZIndex(0);
+AerodromosyHelipuertos.setZIndex(9);
 
 
 
 document.getElementById('DEM30').addEventListener('change', function() {
     DEM30.setVisible(this.checked);
 
-
-    
 });
-
-
 
 document.getElementById('ZonasUrbanas').addEventListener('change', function() {
     zonasUrbanas.setVisible(this.checked);
 });
-
-
 
 document.getElementById('AerodromosyHelipuertos').addEventListener('change', function() {
     AerodromosyHelipuertos.setVisible(this.checked);
@@ -429,21 +449,12 @@ document.getElementById('CurvasNivel').addEventListener('change', function() {
   
 });
 
-
-
-
-
+//Filtro para curvas de nivel
 document.getElementById('aplicarFiltro').addEventListener('click', function() {
     var altura = document.getElementById('alturaInput').value;
     var nuevoFiltro = 'CONTOUR > ' + altura;
     CurvasNivel.getSource().updateParams({'CQL_FILTER': nuevoFiltro});
 });
-
-
-
-
-
-
 
 
 document.getElementById('AeropuertosMilitares').addEventListener('change', function() {
@@ -456,6 +467,30 @@ document.getElementById('Aeropuertos').addEventListener('change', function() {
 document.getElementById('EspacioAereo').addEventListener('change', function() {
     EspacioAereo.setVisible(this.checked);
 });
+
+//-------SWITCH PARA CAPA DE NUBES---------------------
+
+var isLayerActive = true;
+
+document.getElementById('myImage').addEventListener('click', function () {
+    // Cambia el estado de la capa
+    isLayerActive = !isLayerActive;
+
+    // Activa o desactiva la capa de imagen según el estado
+    imageLayer.setVisible(isLayerActive);
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //--------------------------------------------CREAR CAPA CON UN PUNTO--------------------------------------------------------
@@ -607,12 +642,36 @@ document.getElementById('limpiarBuffer').addEventListener('click', function() {
 
 
 
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------------------------- FIN DEL MAPA---------------------
 
 //--------------Barra para hacer mas grande o chico los contenedores-----
@@ -621,33 +680,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const herramientas = document.getElementById('herramientas');
     const container = document.getElementById('container');
     let isResizing = false;
-  
+
     dragger.addEventListener('mousedown', function(e) {
       e.preventDefault();
       isResizing = true;
       let startX = e.clientX;
       let startWidth = herramientas.offsetWidth;
-  
+
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
-  
+
       function onMouseMove(e) {
         if (!isResizing) return;
         // Calcula la diferencia de movimiento
         const dx = e.clientX - startX;
         // Calcula el nuevo ancho basado en el movimiento inicial y el desplazamiento
         let newWidth = startWidth + dx;
-        
+
         // Convierte el 17% del contenedor padre a píxeles para el mínimo ancho
         const minWidth = container.offsetWidth * 0.17;
         // Ajusta el nuevo ancho para que no sea menor que el 17% del contenedor padre
         newWidth = Math.max(newWidth, minWidth);
         // Asegúrate también de que 'herramientas' no ocupe más del contenedor menos el mínimo permitido para el otro pane
         newWidth = Math.min(newWidth, container.offsetWidth - minWidth);
-  
+
         herramientas.style.width = `${newWidth}px`;
       }
-  
+
       function onMouseUp() {
         // Detiene el redimensionamiento
         isResizing = false;
@@ -657,11 +716,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggleButton');
+    const herramientas = document.getElementById('herramientas');
+    // Almacena el estilo de visualización original de "herramientas"
+    let displayStyleOriginal = window.getComputedStyle(herramientas).display;
+
+    toggleButton.addEventListener('click', function() {
+      if (herramientas.style.display !== 'none') {
+        herramientas.style.display = 'none'; // Oculta "herramientas"
+        toggleButton.textContent = '»';
+      } else {
+        // Restablece el contenedor "herramientas" a su estilo de visualización original
+        herramientas.style.display = displayStyleOriginal;
+        toggleButton.textContent = '«';
+      }
+    });
+  });
   
 
 
 
-  
+  //--------------------------CAPA NUBES-----------------
+//-------------------Filtrar la descarga de imagen por el nombre----
 
   function generarUrlImagenBasadaEnHoraUTC() {
     // Obtiene la fecha y hora actual en UTC
@@ -674,27 +755,23 @@ document.addEventListener('DOMContentLoaded', function() {
     let hora = ahoraUTC.getHours();
     let minutos = ahoraUTC.getMinutes();
 
+ 
     if (minutos >= 55) {
-        // Si es después de los 20 minutos de la hora, usa la hora en punto
+        // Si los minutos son mayores o iguales a 55, establece los minutos en 30
         minutos = "30";
-    } else {
-
-        if (minutos >= 45) {
-            // Si es después de los 20 minutos de la hora, usa la hora en punto
-            minutos = "20";
-        } else {
-
-        if (minutos >= 35) {
-            // Si es después de los 20 minutos de la hora, usa la hora en punto
-            minutos = "10";
-        } else {
-
-        if (minutos >= 25) {
-            // Si es después de los 20 minutos de la hora, usa la hora en punto
-            minutos = "00";
-        } else {
-
-        // Si es antes de los 20 minutos de la hora, usa 50 minutos de la hora anterior
+    } else if (minutos >= 45) {
+        // Si los minutos son mayores o iguales a 45, establece los minutos en 20
+        minutos = "20";
+    } else if (minutos >= 35) {
+        // Si los minutos son mayores o iguales a 35, establece los minutos en 10
+        minutos = "10";
+    } else if (minutos >= 25) {
+        // Si los minutos son mayores o iguales a 25, establece los minutos en 00
+        minutos = "00";
+    } else if (minutos >= 15) {
+        // Si los minutos son mayores o iguales a 15, establece los minutos en 50
+        minutos = "50";
+        // Resta una hora a la hora actual
         if (hora === 0) {
             // Ajuste para medianoche
             hora = 23;
@@ -707,18 +784,45 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             hora -= 1; // Hora anterior
         }
-        minutos = "50";
-    }
-}
-}
-}
+    } else if (minutos >=5) {
+        // Si los minutos son mayores o iguales a 5, establece los minutos en 40
+        minutos = "40";
+        // Resta una hora a la hora actual
+        if (hora === 0) {
+            // Ajuste para medianoche
+            hora = 23;
+            // Ajustar día y potencialmente mes/año si es necesario
+            // Esto es más complejo si es el primer día del mes/año, pero para simplificar:
+            ahoraUTC.setDate(ahoraUTC.getDate() - 1);
+            año = ahoraUTC.getFullYear();
+            mes = String(ahoraUTC.getMonth() + 1).padStart(2, '0');
+            dia = String(ahoraUTC.getDate()).padStart(2, '0');
+        } else {
+            hora -= 1; // Hora anterior
+        }
+    } else if (minutos >= 0) {
+        // Si los minutos son mayores o iguales a 15, establece los minutos en 50
+        minutos = "30";
+        // Resta una hora a la hora actual
+        if (hora === 0) {
+            // Ajuste para medianoche
+            hora = 23;
+            // Ajustar día y potencialmente mes/año si es necesario
+            // Esto es más complejo si es el primer día del mes/año, pero para simplificar:
+            ahoraUTC.setDate(ahoraUTC.getDate() - 1);
+            año = ahoraUTC.getFullYear();
+            mes = String(ahoraUTC.getMonth() + 1).padStart(2, '0');
+            dia = String(ahoraUTC.getDate()).padStart(2, '0');
+        } else {
+            hora -= 1; // Hora anterior
+        }}
+    
 
     hora = String(hora).padStart(2, '0');
 
     const url = `http://132.247.103.145/goes16/abi/vistas/rgb/mexico/${año}.${mes}.${dia}.${hora}.${minutos}.goes-16.rgb_ch13.png`;
     return url;
 }
-
 function mostrarImagen() {
     const urlImagen = generarUrlImagenBasadaEnHoraUTC();
     console.log("Intentando cargar la imagen:", urlImagen); // Para depuración
@@ -731,4 +835,13 @@ function mostrarImagen() {
     document.body.appendChild(imgElement); // O el elemento donde quieras añadir la imagen
 }
 
-mostrarImagen();
+
+//BORDE VERDE IMAGEN----------------------
+function toggleBorder() {
+    const image = document.getElementById('myImage');
+    if (image.style.border === 'none') {
+        image.style.border = '4px solid green'; // Cambia el color y grosor del borde según tus preferencias
+    } else {
+        image.style.border = 'none';
+    }
+}

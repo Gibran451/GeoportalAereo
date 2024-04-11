@@ -93,6 +93,10 @@
                         <div>
                             <input type="checkbox" id="DEM30" >
                             <label for="DEM30">Modelo Digital de Elevaciones</label>
+                            <br>
+                            <img id="myImage" src="ruta_de_tu_imagen.jpg" alt="Imagen" onclick="toggleBorder()">
+                            
+
 
                              <!-- Input para que el usuario ingrese el valor de altura para el filtro -->
 
@@ -168,7 +172,7 @@
         </div>
 
         <div id="dragger">
-            <button id="toggleButton"></button>
+            <button id="toggleButton">« </button>
           </div>
           
         <div id="map" class='map '>
@@ -181,8 +185,7 @@
       
         <div id="visor" class="oculto">
             <h2>hola mundo</h2>
-            <div id="imagenMeteorologica"></div>
-            
+         
 
 
             <button onclick="cerrarVisor()">Cerrar Visor</button>
