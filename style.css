@@ -17,6 +17,7 @@ body, html {
 }
 
 #container {
+    
     display: flex;
     margin-left: 10px;
     height: 85%;
