@@ -641,7 +641,64 @@ document.getElementById('limpiarBuffer').addEventListener('click', function() {
 });
 
 
+//----------------simbologia
 
+const vectorSource2 = new ol.source.Vector();
+const vectorLayer2 = new ol.layer.Vector({
+    source: vectorSource2,
+});
+map.addLayer(vectorLayer2);
+
+let selectedIcon = null;
+let draw = null;
+
+// Evento al hacer clic en un icono
+const iconContainer = document.getElementById('icon-container');
+iconContainer.addEventListener('click', function (event) {
+    if (event.target.tagName === 'IMG') {
+        selectedIcon = event.target.src;
+        addPointInteraction();
+    }
+});
+
+
+// Evento al hacer clic en el botón "Limpiar Capa"
+const clearButton = document.getElementById('clearButton');
+clearButton.addEventListener('click', function () {
+    vectorSource2.clear();
+});
+
+// Evento al hacer clic en el botón "Terminar Edición"
+const finishButton = document.getElementById('finishButton');
+finishButton.addEventListener('click', function () {
+    // Desactiva la interacción de dibujo
+    draw.setActive(false);
+});
+
+function addPointInteraction() {
+    // Desactiva la interacción de dibujo si ya está activa
+    if (draw) {
+        draw.setActive(false);
+    }
+
+    // Activa la interacción de dibujo para colocar puntos en el mapa
+    draw = new ol.interaction.Draw({
+        source: vectorSource2,
+        type: 'Point',
+    });
+
+    draw.on('drawstart', function (event) {
+        // Muestra el símbolo seleccionado en lugar de un punto
+        event.feature.setStyle(new ol.style.Style({
+            image: new ol.style.Icon({
+                src: selectedIcon,
+                scale: 0.3,
+            }),
+        }));
+    });
+
+    map.addInteraction(draw);
+}
 }
 
 
@@ -845,3 +902,20 @@ function toggleBorder() {
         image.style.border = 'none';
     }
 }
+
+
+
+//Iconos para permanecer de un color al dar clic
+
+const images = document.querySelectorAll('#icon-container img');
+let activeImage = null;
+
+images.forEach((img) => {
+    img.addEventListener('click', () => {
+        if (activeImage) {
+            activeImage.classList.remove('active'); // Quita la clase "active" de la imagen previamente activa
+        }
+        img.classList.add('active'); // Agrega la clase "active" a la imagen actual
+        activeImage = img; // Actualiza la imagen activa
+    });
+});
