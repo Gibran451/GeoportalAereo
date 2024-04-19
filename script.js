@@ -1,5 +1,4 @@
 
-
 //---------------------------------DESPLEGAR VISOR-------------------------------------
 function cambiarContenido(num) {
     // Ocultar ambos contenidos
@@ -42,27 +41,12 @@ function cambiarContenido(num) {
     document.getElementById('contenido-' + num).style.display = 'block';
 }
 
-function cambiarEstructura() {
-  
-    var replicaBotones = document.getElementById('replica-botones');
 
-    if (visor.classList.contains('oculto')) {
-        // Cambiar el tamaño del mapa y mostrar el visor
-        map.style.flex = '1';
-        visor.classList.remove('oculto');
-        replicaBotones.innerHTML = ''; // Limpiar la réplica de botones
-        replicaBotones.classList.remove('oculto');
-
-
-    } else {
-        cerrarVisor();
-    }
-}
 function cerrarVisor() {
     // Restaurar el tamaño original del mapa y ocultar el visor
     map.style.flex = '3';
     visor.classList.add('oculto');
-    replicaBotones.classList.add('oculto');
+  
 }
 
     // Inicializar con el botón 1 activo
@@ -98,6 +82,9 @@ document.querySelectorAll('.myButton').forEach(button => {
     });
 });
 //.----------------------------------------------------------- MAPA----------------------------------------------------
+
+
+
 window.onload = init;
 
 function init() {
@@ -107,17 +94,16 @@ function init() {
             center: [-102.552784, 23.634501], // Centro en México
             zoom: 4.9
         }),
-        target: 'map', // Señalas el contenedor del mapa
+        target: 'map', // Contenedor del mapa
 
-        // Agregar controles al mapa
         
     });
 
-    // Event listener para el botón
+    // Event listener para el botón zoom Mexico
     document.getElementById('zoomMexicoBtn').addEventListener('click', function() {
         map.getView().animate({
             center: [-102.552784, 23.634501], // Coordenadas de México
-            zoom: 5.3, // Nivel de zoom adecuado para abarcar México
+            zoom: 5.3, // Nivel de zoom 
             duration: 1000 // Duración de la animación en milisegundos
         });
     });
@@ -199,15 +185,14 @@ const overviewMapControl = new ol.control.OverviewMap({
     layers: [new ol.layer.Tile({
       source: new ol.source.OSM()
     })], // Capa base para el minimapa
-    className: 'ol-overviewmap', // Clase CSS para personalizar el estilo
-   
+ 
   });
   
   // Añadir el control al mapa
   map.addControl(overviewMapControl);
   
   // Cambiar la posición del minimapa
-  // Puedes añadir tu propia clase CSS con las propiedades deseadas
+
   document.querySelector('.ol-overviewmap').style.bottom = '10px';
   document.querySelector('.ol-overviewmap').style.top = 'auto';
   document.querySelector('.ol-overviewmap').style.left = '10px';
@@ -265,16 +250,50 @@ var DEM30 = new ol.layer.Tile({
 
 
 
+// -----------------AerodromosyHelipuertoss-----------------------------------
+var source = new ol.source.Vector({
+    url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AAerodromosyHelipuertos&outputFormat=application/json',
+    format: new ol.format.GeoJSON(),
+    attributions: '@geoserver'
+});
 
+// Crear la fuente de datos de agrupaciones
+var clusterSource = new ol.source.Cluster({
+    distance: 60,
+    source: source
+});
 
-var AerodromosyHelipuertos = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:AerodromosyHelipuertos', 'TILED': true }
-    }),
-    title: 'AerodromosyHelipuertos',
+// Crear la capa de agrupaciones
+var AerodromosyHelipuertos  = new ol.layer.Vector({
+    source: clusterSource,
+    style: function(feature) {
+        var size = feature.get('features').length;
+        var style = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 17,
+                stroke: new ol.style.Stroke({
+                    color: '#1a2f4e;'
+                }),
+                fill: new ol.style.Fill({
+                    color: '#19af8a'
+                })
+            }),
+            text: new ol.style.Text({
+                text: size.toString(),
+                fill: new ol.style.Fill({
+                    color: '#ffffff;'
+                })
+            })
+        });
+        return style;
+    },
+    title: 'AerodromosyHelipuertos ',
     visible: false
 });
+
+//----------------FIN CAPA AERODROMOS Y HELIPUERTOS----------------------------
+
+
 
 // Zonas Urbanas
 var zonasUrbanas = new ol.layer.Tile({
@@ -340,14 +359,26 @@ var CurvasNivel = new ol.layer.Tile({
 
 
 // Aeropuertos Militares
-var AeropuertosMilitares = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:AeropuertosMilitares', 'TILED': true }
+var AeropuertosMilitares = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AAeropuertosMilitares&maxFeatures=50&outputFormat=application/json',
+        format: new ol.format.GeoJSON(),
+        attributions: '@geoserver'
+    }),
+    style: new ol.style.Style({
+        image: new ol.style.Icon({
+            src: './ICONOS/AeropuertoMilitar.png',
+
+            scale: 0.3
+        })
     }),
     title: 'AeropuertosMilitares',
     visible: false
 });
+
+
+
+
 
 // Aeropuertos
 var Aeropuertos = new ol.layer.Tile({
@@ -373,7 +404,7 @@ var EspacioAereo = new ol.layer.Tile({
 
 
 var bounds = ol.proj.transformExtent([-121.35, 9.5, -83.94, 32.65], 'EPSG:4326', 'EPSG:3857');
-
+// Imagenes RGB de nubosidad
  var imageLayer = new ol.layer.Image({
     source: new ol.source.ImageStatic({
         url: generarUrlImagenBasadaEnHoraUTC(),
@@ -381,7 +412,7 @@ var bounds = ol.proj.transformExtent([-121.35, 9.5, -83.94, 32.65], 'EPSG:4326',
         
         imageExtent: bounds
     }),
-    opacity:.6, // Ajusta la transparencia como necesites
+    opacity:.6, 
     visible:false
 });
 
@@ -390,7 +421,7 @@ var bounds = ol.proj.transformExtent([-121.35, 9.5, -83.94, 32.65], 'EPSG:4326',
 
 
 // Añadir las capas al mapa
-map.addLayer(DEM30);
+
 map.addLayer(EspacioAereo);
 map.addLayer(RegionesAereasMilitares);
 map.addLayer(Municipios);
@@ -403,7 +434,7 @@ map.addLayer(imageLayer);
 map.addLayer(AeropuertosMilitares);
 map.addLayer(Aeropuertos);
 
-
+// Posicion de las capas en z
 
 DEM30.setZIndex(2);
 EspacioAereo.setZIndex(1);
@@ -418,9 +449,9 @@ imageLayer.setZIndex(0);
 AerodromosyHelipuertos.setZIndex(9);
 
 
-
-document.getElementById('DEM30').addEventListener('change', function() {
-    DEM30.setVisible(this.checked);
+// Funcion Swicher  de las capas
+document.getElementById('elevationLayer').addEventListener('change', function() {
+    elevationLayer.setVisible(this.checked);
 
 });
 
@@ -475,20 +506,8 @@ var isLayerActive = true;
 document.getElementById('myImage').addEventListener('click', function () {
     // Cambia el estado de la capa
     isLayerActive = !isLayerActive;
-
-    // Activa o desactiva la capa de imagen según el estado
     imageLayer.setVisible(isLayerActive);
 });
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -511,7 +530,7 @@ var addPointMode = false; // Estado inicial del modo para añadir puntos
 document.getElementById('addPointBtn').addEventListener('click', function() {
   addPointMode = !addPointMode; // Alternar modo entre true y false
   
-  // Opcional: Actualizar el texto del botón para reflejar el estado actual
+//Actualizar el texto del botón para reflejar el estado actual
   this.textContent = addPointMode ? "Cancelar Añadir Punto" : "Añadir Punto";
 });
 
@@ -538,7 +557,7 @@ document.getElementById('layerVisibility').addEventListener('change', function()
   vectorLayer.setVisible(this.checked);
 });
 
-//eliminar capa de punto--------------------------------------
+//Boton para eliminar capa de punto--------------------------------------
 document.getElementById('removeLayerBtn').addEventListener('click', function() {
     vectorSource.clear(); // Limpia la fuente vectorial, eliminando todos los puntos
   });
@@ -636,7 +655,7 @@ document.getElementById('createBuffer').addEventListener('click', function() {
 document.getElementById('limpiarBuffer').addEventListener('click', function() {
     if (window.bufferLayer) {
         map.removeLayer(window.bufferLayer); // Elimina la capa de buffer del mapa
-        window.bufferLayer = null; // Opcional: establecer la variable a null para limpieza
+        window.bufferLayer = null; //Establecer la variable a null para limpieza
     }
 });
 
@@ -699,7 +718,29 @@ function addPointInteraction() {
 
     map.addInteraction(draw);
 }
-}
+
+
+
+
+
+
+
+// Agrega la capa de MDE de AWS
+const elevationLayer = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+      url: 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
+      crossOrigin: 'anonymous',
+      
+    }),
+
+    visible: false,
+    opacity: 0.4   
+  });
+  
+  // Agrega la capa de MDE al mapa
+  map.addLayer(elevationLayer);
+
+  
 
 
 
@@ -713,6 +754,12 @@ function addPointInteraction() {
 
 
 
+
+
+
+
+
+}  
 
 
 
@@ -893,18 +940,6 @@ function mostrarImagen() {
 }
 
 
-//BORDE VERDE IMAGEN----------------------
-function toggleBorder() {
-    const image = document.getElementById('myImage');
-    if (image.style.border === 'none') {
-        image.style.border = '4px solid green'; // Cambia el color y grosor del borde según tus preferencias
-    } else {
-        image.style.border = 'none';
-    }
-}
-
-
-
 //Iconos para permanecer de un color al dar clic
 
 const images = document.querySelectorAll('#icon-container img');
@@ -919,3 +954,4 @@ images.forEach((img) => {
         activeImage = img; // Actualiza la imagen activa
     });
 });
+

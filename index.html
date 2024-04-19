@@ -24,89 +24,121 @@
                 <div id="contenido-1">
 
                 <div id="capas">
+
+
                     <div id="layer-switcher" >
-                        <h2>Layer Switcher</h2>
-                       
-                        <div>
-                            <input type="checkbox" id="ZonasUrbanas" >
-                            <label for="ZonasUrbanas">Zonas Urbanas</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="Volcanes">
+
+                        <div class="wrap-collabsible"> <input id="collapsible1" class="toggle"type="checkbox" style="display: none;">
+                            <label for="collapsible1" class="lbl-toggle" tabindex="0">Espacio Geográfico </label>
+                            <div class="collapsible-content">
+                                <div class="content-inner">
+                                 
+                                    <div class="Layers">
+                                       
+                                        <input type="checkbox" id="Municipios">
+                                        <label for="Municipios">Municipios</label>
+                                    <br>
+                                        <input type="checkbox" id="Estatales">
+                                        <label for="Estatales">Estados</label>
+
+                                    <br>
+                                    <input type="checkbox" id="RegionesAereasMilitares">
+                                    <label for="RegionesAereasMilitares">Regiones Aereas Militares</label>
+                                    <br>
+                                    <input type="checkbox" id="EspacioAereo">
+                                    <label for="EspacioAereo">Espacio Aéreo</label>
+
+
+                                    </div>
+                                </div>
+                           </div>
+                      </div>
+
+
+                      <div class="wrap-collabsible"> <input id="collapsible2" class="toggle" type="checkbox"style="display: none;">
+                        <label for="collapsible2" class="lbl-toggle" tabindex="0">Topografia</label>
+                        <div class="collapsible-content">
+                            <div class="content-inner">
+                         
+                                <div class="Layers">
+                                    <input type="checkbox" id="Volcanes">
                             <label for="Volcanes">Volcanes</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="AerodromosyHelipuertos">
-                            <label for="AerodromosyHelipuertos">Aerodromos y Helipuertos</label>
-                        </div>
-
-                        <div>
-                            <input type="checkbox" id="RegionesAereasMilitares">
-                            <label for="RegionesAereasMilitares">Regiones Aereas Militares</label>
-                        </div>
-
-                        <div>
-                            <input type="checkbox" id="Municipios">
-                            <label for="Municipios">Municipios</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="Estatales">
-                            <label for="Estatales">Estatales</label>
-                        </div>
-                        
-                        <div>
+                                <br>
                             <input type="checkbox" id="CurvasNivel">
                             <label for="CurvasNivel">Curvas de Nivel</label>
-
-                            <label for="alturaInput">Altura mínima (m):</label>
-                            <input type="number" id="alturaInput" value="1000">
+                                <br>
+                            <label for="alturaInput">Alturas mayores a (m):</label>
+                            <input type="number" id="alturaInput" value="3000">
                         
                             <!-- Botones para aplicar el filtro a la capa existente y para crear una nueva capa filtrada -->
                             <button id="aplicarFiltro">Aplicar Filtro</button>
-
-                        </div>
-
-
-
-
-
+                            <div>
+                                <input type="checkbox" id="elevationLayer" >
+                                <label for="elevationLayer">Modelo Digital de Elevaciones</label>
+                                <br>
                         
-                        <div>
-                            <input type="checkbox" id="AeropuertosMilitares">
-                            <label for="AeropuertosMilitares">Aeropuertos Militares</label>
-                        </div>
-                        <div>
+                            </div>
+                                </div>
+                            </div>
+                       </div>
+                  </div>
+
+
+
+
+                  <div class="wrap-collabsible"> <input id="collapsible3" class="toggle"type="checkbox" style="display: none;">
+                    <label for="collapsible3" class="lbl-toggle" tabindex="0">infraestructura Aérea </label>
+                    <div class="collapsible-content">
+                        <div class="content-inner">
+                         
+                            <div class="Layers">
+                               
+                                <input type="checkbox" id="AerodromosyHelipuertos">
+                                <label for="AerodromosyHelipuertos">Aerodromos y Helipuertos</label>
+                            <br>
+                                <input type="checkbox" id="AeropuertosMilitares">
+                                <label for="AeropuertosMilitares">Aeropuertos Militares</label>
+
+                            <br>
                             <input type="checkbox" id="Aeropuertos">
                             <label for="Aeropuertos">Aeropuertos</label>
+                            
+                            </div>
                         </div>
-                        <div>
-                            <input type="checkbox" id="EspacioAereo">
-                            <label for="EspacioAereo">Espacio Aéreo</label>
+                   </div>
+              </div>
+                        
+                  
+              <div class="wrap-collabsible"> <input id="collapsible4" class="toggle"type="checkbox" style="display: none;">
+                <label for="collapsible4" class="lbl-toggle" tabindex="0">Población </label>
+                <div class="collapsible-content">
+                    <div class="content-inner">
+                     
+                        <div class="Layers">
+                           
+                            <input type="checkbox" id="ZonasUrbanas" >
+                                        <label for="ZonasUrbanas">Zonas Urbanas</label>
+                                    <br>
+                                    <input type="checkbox" id="ZonasUrbanas" >
+                                    <label for="ZonasUrbanas">Zonas Urbanas</label>
+
                         </div>
                     </div>
+               </div>
+          </div>     
+    
+       
+   
+         </div>
                     
                 </div>
-                <div id="MDE">
+                <div id="MDE"  >
+                
+                   
 
-
-                    <div id="mde"> 
-                        <div>
-                            <input type="checkbox" id="DEM30" >
-                            <label for="DEM30">Modelo Digital de Elevaciones</label>
-                            <br>
-                            <img id="myImage" src="ruta_de_tu_imagen.jpg" alt="Imagen" onclick="toggleBorder()">
-                            
-
-
-                             <!-- Input para que el usuario ingrese el valor de altura para el filtro -->
-
-
-
-
-
-                        </div>
-
-                       
+                     <div id="mde"> 
+                      
+                        <img class="Borde" id="myImage" src="./Imagenes/Nubes.png" alt="Imagen">
                       </div>
 
 
@@ -148,23 +180,30 @@
                     <input type="number" id="bufferDistance" value="1000">
                     <button id="createBuffer">Crear Buffer</button>
                     <button id="limpiarBuffer">Limpiar Buffer</button>
-
+            
+                 <br>
+                 <select id="nombreAeropuertoSelect">
+                    <option value="">Seleccione un aeropuerto</option>
+                  </select>
+                   
 
                 </div>
+               
+           
                  </div>
 <!-- FIN DE HERRAMIENTAS-->
-            <div id="mapa_base" style="display: flex; justify-content: space-around;">
+            <div id="mapa_base" style="display: flex;">
                       <div id="uno"> 
-                       <img src="path/to/osmImage.png" alt="OSM" data-value="OSMStandard" class="map-base-selector">
+                       <img src="./Imagenes/1.png" alt="OSM" data-value="OSMStandard" class="map-base-selector">
                      </div>
                      <div id="dos">
-                      <img src="path/to/opentopoImage.png" alt="OTM" data-value="opentopomap" class="map-base-selector">
+                      <img src="./Imagenes/2.png" alt="OTM" data-value="opentopomap" class="map-base-selector">
                     </div>
                     <div id="tres">
-                      <img src="path/to/cartoDarkImage.png" alt="Carto Dark" data-value="Dark" class="map-base-selector">
+                      <img src="./Imagenes/3.png" alt="Carto Dark" data-value="Dark" class="map-base-selector">
                     </div>
                     <div id="cuatro">
-                      <img src="path/to/esriSatImage.png" alt="ESRI " data-value="ESRI Satelital" class="map-base-selector">
+                      <img src="./Imagenes/4.png" alt="ESRI " data-value="ESRI Satelital" class="map-base-selector">
                     </div>
                     
             </div>
@@ -199,6 +238,7 @@
                 <img src="./ICONOS/Aereo (7).png" alt="Icono 7">
                 <img src="./ICONOS/Aereo (8).png" alt="Icono 8">
                 <img src="./ICONOS/Aereo (9).png" alt="Icono 9">
+                <img src="./ICONOS/Aereo (10).png" alt="Icono 10">
 
 
             </div>
