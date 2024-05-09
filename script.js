@@ -1,4 +1,6 @@
 
+
+
 //---------------------------------DESPLEGAR VISOR-------------------------------------
 function cambiarContenido(num) {
     // Ocultar ambos contenidos
@@ -92,7 +94,7 @@ function init() {
         view: new ol.View({
             projection: 'EPSG:4326',
             center: [-102.552784, 23.634501], // Centro en México
-            zoom: 4.9
+            zoom: 5.6
         }),
         target: 'map', // Contenedor del mapa
 
@@ -123,7 +125,7 @@ const osm = new ol.layer.Tile({
 
 const opentopomap = new ol.layer.Tile({
     source: new ol.source.XYZ({
-      url: 'http://tile.opentopomap.org/{z}/{x}/{y}.png'
+      url: 'https://tile.opentopomap.org/{z}/{x}/{y}.png'
     }),
     visible: false,
     title: 'opentopomap'
@@ -132,7 +134,7 @@ const opentopomap = new ol.layer.Tile({
 const carto = new ol.layer.Tile({
 
     source: new ol.source.XYZ({
-      url: 'http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+      url: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
     }),
     visible: false,
     title: 'Dark'
@@ -235,18 +237,6 @@ document.querySelectorAll('.map-base-selector').forEach((img) => {
 
 var wmsSourceUrl = 'http://localhost:8080/geoserver/GEOPORTAL/wms';
 
-//--AerodromosyHelipuertos
-var DEM30 = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:DEM30', 'TILED': true }
-    }),
-    title: 'DEM30',
-    visible: false
-});
-
-
- 
 
 
 
@@ -316,35 +306,101 @@ var Volcanes = new ol.layer.Tile({
     visible: false
 });
 
+//color Regiones Aereas
+var colorMapping = {
+    "1": 'rgba(56, 177, 173, 0.8)',
+    "2": 'rgba(161, 39, 245, 0.8)',
+    "3": 'rgba(39, 157, 245, 0.8)',
+    "4": 'rgba(0, 34, 120, 0.8)',
+
+};
+
+// Definir una función de estilo que asigna colores basados en una propiedad del feature
+var estiloRegionesAereasMilitares = function(feature) {
+    var region = feature.get('OBJECTID'); 
+    var color = colorMapping[region] || 'rgba(200, 200, 200, 0.5)'; // color por defecto si no se encuentra el mapeo
+
+    return new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: color // Relleno basado en el mapeo
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'rgba(0, 0, 0, 1)', // Contorno negro
+            width: 2
+        })
+    });
+};
+
 // Regiones Aéreas Militares
-var RegionesAereasMilitares = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:RegionesAereasMilitares', 'TILED': true }
+var RegionesAereasMilitares = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3ARegionesAereasMilitares&maxFeatures=50&outputFormat=application/json',
+        format: new ol.format.GeoJSON()
     }),
+    style: estiloRegionesAereasMilitares, // Aplicar el estilo personalizado
     title: 'RegionesAereasMilitares',
     visible: false
 });
 
+
 // Municipios
-var Municipios = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:Municipios', 'TILED': true }
-    }),
+
+
+
+var municipiosSource = new ol.source.Vector({
+    url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AMunicipios&maxFeatures=50000&outputFormat=application/json',
+    strategy: ol.loadingstrategy.bbox,
+    format: new ol.format.GeoJSON({
+        featureProjection: "EPSG:4326"
+    })
+});
+
+var Municipios = new ol.layer.Vector({
+    source: municipiosSource,
     title: 'Municipios',
     visible: false
 });
 
-// Estatales
-var Estatales = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:Estatales', 'TILED': true }
+
+
+// Eventos para controlar la visibilidad del indicador de carga (cargando...)
+municipiosSource.on('featuresloadstart', function() {
+    document.getElementById('loading').style.display = 'block';
+});
+
+municipiosSource.on('featuresloadend', function() {
+    document.getElementById('loading').style.display = 'none';
+});
+
+municipiosSource.on('featuresloaderror', function() {
+    document.getElementById('loading').style.display = 'none';
+    alert('Error al cargar las características.');
+});
+
+
+
+
+//color estados
+var estiloEstatales = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(255, 111, 97, 0.3)'
     }),
+    stroke: new ol.style.Stroke({
+        color:  'rgba(81, 83, 82, 0.8)',
+        width: 2
+    })
+});
+//estados
+var Estatales = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AEstatales&maxFeatures=500&outputFormat=application/json',
+        format: new ol.format.GeoJSON()
+    }),
+    style: estiloEstatales, // Aplicar el estilo personalizado
     title: 'Estatales',
     visible: false
 });
+
 
 // Curvas de Nivel
 var CurvasNivel = new ol.layer.Tile({
@@ -363,44 +419,64 @@ var AeropuertosMilitares = new ol.layer.Vector({
     source: new ol.source.Vector({
         url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AAeropuertosMilitares&maxFeatures=50&outputFormat=application/json',
         format: new ol.format.GeoJSON(),
-        attributions: '@geoserver'
-    }),
-    style: new ol.style.Style({
+
+      }),
+      style: new ol.style.Style({
         image: new ol.style.Icon({
-            src: './ICONOS/AeropuertoMilitar.png',
-
-            scale: 0.3
+          src: './ICONOS/AeropuertoMilitar.png',
+          scale: 0.3
         })
-    }),
-    title: 'AeropuertosMilitares',
-    visible: false
+      }),
+      title: 'Aeropuertos Militares',
+      visible: false
 });
-
-
-
 
 
 // Aeropuertos
-var Aeropuertos = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:Aeropuertos', 'TILED': true }
-    }),
-    title: 'Aeropuertos',
-    visible: false
+var Aeropuertos = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AAeropuertos&maxFeatures=50&outputFormat=application/json',
+        format: new ol.format.GeoJSON(),
+   
+      }),
+      style: new ol.style.Style({
+        image: new ol.style.Icon({
+          src: './ICONOS/Aeropuertos.png',
+          scale: 0.15
+        })
+      }),
+      title: 'Aeropuertos ',
+      visible: false
 });
 
 
 
-// Espacio Aéreo
-var EspacioAereo = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:Espacio_Aereo', 'TILED': true }
+
+
+
+//Color EspacioAereo
+var estiloEspacioAereo = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(95, 217, 142, 0.8)'
     }),
+    stroke: new ol.style.Stroke({
+        color:  'rgba(81, 83, 82, 0.8)',
+        width: 2
+    })
+});
+//EspacioArereo
+var EspacioAereo = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AEspacio_Aereo&maxFeatures=50&outputFormat=application/json',
+        format: new ol.format.GeoJSON()
+    }),
+    style: estiloEspacioAereo, // Aplicar el estilo personalizado
     title: 'EspacioAereo',
     visible: false
 });
+
+
+
 
 
 var bounds = ol.proj.transformExtent([-121.35, 9.5, -83.94, 32.65], 'EPSG:4326', 'EPSG:3857');
@@ -436,7 +512,7 @@ map.addLayer(Aeropuertos);
 
 // Posicion de las capas en z
 
-DEM30.setZIndex(2);
+
 EspacioAereo.setZIndex(1);
 RegionesAereasMilitares.setZIndex(3);
 Municipios.setZIndex(5);
@@ -447,7 +523,7 @@ CurvasNivel.setZIndex(7);
 Aeropuertos.setZIndex(8);
 imageLayer.setZIndex(0);
 AerodromosyHelipuertos.setZIndex(9);
-
+AeropuertosMilitares.setZIndex(10);
 
 // Funcion Swicher  de las capas
 document.getElementById('elevationLayer').addEventListener('change', function() {
@@ -661,7 +737,6 @@ document.getElementById('limpiarBuffer').addEventListener('click', function() {
 
 
 //----------------simbologia
-
 const vectorSource2 = new ol.source.Vector();
 const vectorLayer2 = new ol.layer.Vector({
     source: vectorSource2,
@@ -679,7 +754,6 @@ iconContainer.addEventListener('click', function (event) {
         addPointInteraction();
     }
 });
-
 
 // Evento al hacer clic en el botón "Limpiar Capa"
 const clearButton = document.getElementById('clearButton');
@@ -714,11 +788,11 @@ function addPointInteraction() {
                 scale: 0.3,
             }),
         }));
+        event.feature.set('originalStyle', event.feature.getStyle());
     });
 
     map.addInteraction(draw);
 }
-
 
 
 
@@ -750,6 +824,214 @@ const elevationLayer = new ol.layer.Tile({
 
 
 
+  var selectedStyle = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 10,
+        stroke: new ol.style.Stroke({
+            color: '#ffcc33',
+            width: 2
+        }),
+        fill: new ol.style.Fill({
+            color: '#ffcc33'
+        })
+    }),
+    stroke: new ol.style.Stroke({
+        color: '#ffcc33',
+        width: 2
+    }),
+    fill: new ol.style.Fill({
+        color: 'rgba(255, 204, 51, 0.5)'
+    })
+});
+
+var selectedFeature = null;
+var originalStyle = null;
+
+
+
+
+
+
+// =======================POPUP Para CAPAS ==================================
+// Crear un overlay para el popup combinado
+var overlayCombinado = new ol.Overlay({
+    element: document.getElementById('popup-combinado'),
+    autoPan: false,
+    positioning: 'top-left',
+    offset: [10, -10],
+    stopEvent: true,
+    className: 'custom-overlay-class'
+});
+
+// Añadir el overlay combinado al mapa
+map.addOverlay(overlayCombinado);
+
+// Función para mostrar un popup combinado
+function mostrarPopupCombinado(features, coordinates) {
+    var contenido = '<div>';
+
+    features.forEach(function(feature) {
+        var layerTitle = feature.layerTitle;
+        var fieldName1 = feature.fieldName1;
+        var fieldValue1 = feature.fieldValue1;
+        var fieldName2 = feature.fieldName2;
+        var fieldValue2 = feature.fieldValue2;
+        
+        contenido += '<h3>' + layerTitle + '</h3>';
+        contenido += '<h4>' + fieldName1 + ':</h4>' + fieldValue1;
+        contenido += '<h4>' + fieldName2 + ':</h4>' + fieldValue2;
+    });
+
+    contenido += '<a href="#" id="popup-combinado-closer" class="ol-popup-closer">×</a></div>';
+
+    var popupElement = document.getElementById('popup-combinado');
+    document.getElementById('popup-combinado-content').innerHTML = contenido;
+
+    // Ajustar la posición del popup combinado
+    overlayCombinado.setPosition(coordinates);
+
+    popupElement.style.display = 'block';
+
+    // Agregar evento de clic al botón de cerrar
+    document.getElementById('popup-combinado-closer').onclick = function () {
+        overlayCombinado.setPosition(undefined);
+        popupElement.style.display = 'none';
+        return false; // Previene la propagación del evento
+    };
+}
+// Evento de clic en el mapa para mostrar el popup combinado y resaltar el feature seleccionado
+function handleMapClick(evt) {
+    var features = [];
+    var coordinates = null;
+    var clickedFeature = null;
+    var topmostLayerIndex = -1;
+
+    map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+        var layerIndex = map.getLayers().getArray().indexOf(layer);
+        if (layerIndex > topmostLayerIndex) {
+            topmostLayerIndex = layerIndex;
+            clickedFeature = feature;
+            coordinates = feature.getGeometry().getCoordinates();
+
+            var layerTitle, fieldName1, fieldValue1, fieldName2, fieldValue2;
+
+            if (layer === AeropuertosMilitares) {
+                layerTitle = 'AEROPUERTOS MILITARES';
+                fieldName1 = 'Nombre';
+                fieldValue1 = feature.get('NOMBRE');
+                fieldName2 = 'Nombre Alternativo';
+                fieldValue2 = feature.get('NOMBRE_ALT');
+            } else if (layer === Aeropuertos) {
+                layerTitle = 'AEROPUERTOS';
+                fieldName1 = 'Nombre';
+                fieldValue1 = feature.get('NOMBRE');
+                fieldName2 = 'Nombre Alternativo';
+                fieldValue2 = feature.get('NOMBRE_ALT');
+            } else if (layer === Estatales) {
+                layerTitle = 'ESTADOS';
+                fieldName1 = 'Estado';
+                fieldValue1 = feature.get('NOMGEO');
+                fieldName2 = 'Número de Entidad';
+                fieldValue2 = feature.get('CVEGEO');
+            } else if (layer === RegionesAereasMilitares) {
+                layerTitle = 'Regiones Aéreas Militares';
+                fieldName1 = 'Región';
+                fieldValue1 = feature.get('Region');
+                fieldName2 = 'Área';
+                fieldValue2 = feature.get('Shape_Area');
+            }else if (layer === EspacioAereo) {
+                layerTitle = 'Espacio Aéreo';
+                fieldName1 = 'Nombre';
+                fieldValue1 = feature.get('NOM_COMP');
+                fieldName2 = 'Region';
+                fieldValue2 = feature.get('REGION');
+            }else if(layer === 
+                AerodromosyHelipuertos ){
+                    layerTitle = 'Aerodromos y Helipuertos';
+                    fieldName1 = 'Tipo';
+                    fieldValue1 = feature.get('TIPO_AERÓ	');
+                    fieldName2 = 'Nombre';
+                    fieldValue2 = feature.get('NOMBRE');
+            }
+    
+            
+            features = [{
+                layerTitle: layerTitle,
+                fieldName1: fieldName1,
+                fieldValue1: fieldValue1,
+                fieldName2: fieldName2,
+                fieldValue2: fieldValue2
+            }];
+        }
+    });
+
+    if (features.length > 0) {
+        mostrarPopupCombinado(features, coordinates);
+
+        // Resaltar el feature seleccionado
+        if (clickedFeature !== selectedFeature) {
+            // Restaurar el estilo original del feature previamente seleccionado
+            if (selectedFeature) {
+                selectedFeature.setStyle(originalStyle);
+            }
+
+            // Guardar el feature seleccionado y su estilo original
+            selectedFeature = clickedFeature;
+            originalStyle = selectedFeature.getStyle();
+
+            // Aplicar el nuevo estilo de selección
+            selectedFeature.setStyle(selectedStyle);
+        }
+    } else {
+        // Ocultar el popup si no hay features seleccionados
+        var popupElement = document.getElementById('popup-combinado');
+        popupElement.style.display = 'none';
+
+        // Restaurar el estilo original del feature previamente seleccionado
+        if (selectedFeature) {
+            selectedFeature.setStyle(originalStyle);
+            selectedFeature = null;
+            originalStyle = null;
+        }
+    }
+}
+
+// Añadir el manejador de eventos al mapa
+map.on('singleclick', handleMapClick);
+
+
+
+  //=========================FIN POPUPS======================================================
+
+  
+
+//MOSTRAR LISTA DE NOMBRES  de AEROPUERTOS MILITARES AL DAR CLICK EN EL BOTON 
+document.getElementById('btn-cargar-nombres').addEventListener('click', function() {
+  var url = 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AAeropuertosMilitares&maxFeatures=50&outputFormat=application/json';
+
+  fetch(url)
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      var lista = document.getElementById('lista-nombres');
+      lista.innerHTML = ''; // Limpiar la lista anterior
+      json.features.forEach(function(feature) {
+        var nombre = feature.properties.NOMBRE;
+        var coordenadas = feature.geometry.coordinates;
+        var li = document.createElement('li');
+        li.textContent = nombre;
+        li.style.cursor = 'pointer';
+        li.onclick = function() {
+          alert('Capa: Aeropuertos Militares\nNombre: ' + nombre + '\nCoordenadas: ' + coordenadas.join(', '));
+        };
+        lista.appendChild(li);
+      });
+    })
+    .catch(function(error) {
+      console.error('Error al cargar los nombres:', error);
+    });
+});
 
 
 
@@ -760,20 +1042,6 @@ const elevationLayer = new ol.layer.Tile({
 
 
 }  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //--------------------------------------- FIN DEL MAPA---------------------
@@ -954,4 +1222,57 @@ images.forEach((img) => {
         activeImage = img; // Actualiza la imagen activa
     });
 });
+
+document.getElementById('download-btn').addEventListener('click', function() {
+    html2canvas(document.getElementById('map')).then(canvas => {
+        // Crear un elemento <a> para descargar la imagen
+        const a = document.createElement('a');
+        // El nombre del archivo que se descargará
+        a.download = 'mapa-capturado.png';
+        // Convertir el canvas a una URL de imagen y asignarlo como href de <a>
+        a.href = canvas.toDataURL('image/png');
+        // Simular un clic sobre el elemento <a> para iniciar la descarga
+        a.click();
+    });
+});
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var preloader = document.getElementById('preloader');
+        var greenShape = document.getElementById('green-shape');
+        var redShape = document.getElementById('red-shape');
+
+        // Asegurar que la animación de crecimiento haya terminado
+        setTimeout(function() {
+            greenShape.style.animationPlayState = 'running';
+            redShape.style.animationPlayState = 'running';
+        }, 3000); // Coincide con la duración de la animación de crecimiento
+
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                preloader.style.display = 'none';
+            }, 2000); // Esperar a que las animaciones de los paralelogramos terminen
+        });
+    });
+});
+
+function printMap() {
+    html2canvas(document.querySelector("#map")).then(canvas => {
+        var printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write('<html><body><img src="' + canvas.toDataURL() + '"/></body></html>');
+        printWindow.document.addEventListener('load', function() {
+            printWindow.print();
+            // Retrasa el cierre para dar tiempo a la impresión
+            setTimeout(function() { printWindow.close(); }, 1000);
+        });
+        printWindow.document.close();
+    });
+}
+
+
 
