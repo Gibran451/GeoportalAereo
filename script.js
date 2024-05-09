@@ -851,7 +851,6 @@ var originalStyle = null;
 
 
 
-
 // =======================POPUP Para CAPAS ==================================
 // Crear un overlay para el popup combinado
 var overlayCombinado = new ol.Overlay({
