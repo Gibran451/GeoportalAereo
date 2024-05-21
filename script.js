@@ -295,16 +295,29 @@ var zonasUrbanas = new ol.layer.Tile({
     visible: false
 });
 
-// Volcanes
-var Volcanes = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: wmsSourceUrl,
-        params: { 'LAYERS': 'GEOPORTAL:Volcanes', 'TILED': true }
-    }),
-    title: 'Volcanes'
-    ,
-    visible: false
+
+//Volcanes
+var Volcanes = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AVolcanes&maxFeatures=50&outputFormat=application/json',
+        format: new ol.format.GeoJSON(),
+   
+      }),
+      style: new ol.style.Style({
+        image: new ol.style.Icon({
+          src: './ICONOS/volcan.png',
+          scale: 0.5
+        })
+      }),
+      title: 'Volcanes ',
+      visible: false
 });
+
+
+
+
+
+
 
 //color Regiones Aereas
 var colorMapping = {
@@ -345,8 +358,6 @@ var RegionesAereasMilitares = new ol.layer.Vector({
 
 // Municipios
 
-
-
 var municipiosSource = new ol.source.Vector({
     url: 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AMunicipios&maxFeatures=50000&outputFormat=application/json',
     strategy: ol.loadingstrategy.bbox,
@@ -355,27 +366,25 @@ var municipiosSource = new ol.source.Vector({
     })
 });
 
+// Definir el estilo para la capa de municipios en rojo
+var municipiosRedStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(255, 183, 0, 1)' // Color rojo con opacidad 0.5
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(255, 120, 0, 1)', // Color rojo con opacidad 1
+        width: 3
+    })
+});
+
 var Municipios = new ol.layer.Vector({
     source: municipiosSource,
     title: 'Municipios',
-    visible: false
+    visible: false,
+    style: municipiosRedStyle
 });
 
 
-
-// Eventos para controlar la visibilidad del indicador de carga (cargando...)
-municipiosSource.on('featuresloadstart', function() {
-    document.getElementById('loading').style.display = 'block';
-});
-
-municipiosSource.on('featuresloadend', function() {
-    document.getElementById('loading').style.display = 'none';
-});
-
-municipiosSource.on('featuresloaderror', function() {
-    document.getElementById('loading').style.display = 'none';
-    alert('Error al cargar las características.');
-});
 
 
 
@@ -386,7 +395,7 @@ var estiloEstatales = new ol.style.Style({
         color: 'rgba(255, 111, 97, 0.3)'
     }),
     stroke: new ol.style.Stroke({
-        color:  'rgba(81, 83, 82, 0.8)',
+        color:  'rgba(255, 111, 97, 0.9)',
         width: 2
     })
 });
@@ -525,11 +534,9 @@ imageLayer.setZIndex(0);
 AerodromosyHelipuertos.setZIndex(9);
 AeropuertosMilitares.setZIndex(10);
 
-// Funcion Swicher  de las capas
-document.getElementById('elevationLayer').addEventListener('change', function() {
-    elevationLayer.setVisible(this.checked);
 
-});
+// Funcion Swicher  de las capas
+
 
 document.getElementById('ZonasUrbanas').addEventListener('change', function() {
     zonasUrbanas.setVisible(this.checked);
@@ -544,9 +551,54 @@ document.getElementById('Volcanes').addEventListener('change', function() {
 document.getElementById('RegionesAereasMilitares').addEventListener('change', function() {
     RegionesAereasMilitares.setVisible(this.checked);
 });
+
+//=====================================AGREGAR CAPA MUNICIPIOS=====================
+
+document.getElementById('estadoSelect').addEventListener('change', function() {
+    var selectedCveEnt = this.value;
+    var municipiosCheckbox = document.getElementById('Municipios');
+
+    municipiosSource.clear(); // Limpiar la capa antes de agregar nuevas características
+
+    if (selectedCveEnt) {
+        var url = 'http://localhost:8080/geoserver/GEOPORTAL/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GEOPORTAL%3AMunicipios&maxFeatures=50000&outputFormat=application/json&CQL_FILTER=CVE_ENT=' + selectedCveEnt;
+
+        var updatedSource = new ol.source.Vector({
+            url: url,
+            format: new ol.format.GeoJSON({
+                featureProjection: "EPSG:4326"
+            })
+        });
+
+        Municipios.setSource(updatedSource);
+        Municipios.setVisible(true);
+
+        // Mostrar y marcar el checkbox
+        municipiosCheckbox.style.display = 'block';
+        municipiosCheckbox.checked = true;
+
+         // Zoom a la extensión de los municipios seleccionados con un margen adicional
+        updatedSource.on('featuresloadend', function() {
+            var extent = updatedSource.getExtent();
+            var margin = 0.1; // 10% de margen adicional
+            var width = extent[2] - extent[0];
+            var height = extent[3] - extent[1];
+            extent[0] -= width * margin;
+            extent[2] += width * margin;
+            extent[1] -= height * margin;
+            extent[3] += height * margin;
+            map.getView().fit(extent, { duration: 1000 });
+        });
+    } else {
+        Municipios.setVisible(false);
+        municipiosCheckboxContainer.style.display = 'none';
+    }
+});
+
 document.getElementById('Municipios').addEventListener('change', function() {
     Municipios.setVisible(this.checked);
 });
+//-----------------FIN CAPA MUNICIPIOS------------------
 document.getElementById('Estatales').addEventListener('change', function() {
     Estatales.setVisible(this.checked);
 });
@@ -735,16 +787,18 @@ document.getElementById('limpiarBuffer').addEventListener('click', function() {
     }
 });
 
+//----------------simbologia de visor---------------
 
-//----------------simbologia
 const vectorSource2 = new ol.source.Vector();
 const vectorLayer2 = new ol.layer.Vector({
     source: vectorSource2,
 });
 map.addLayer(vectorLayer2);
+vectorLayer2.setZIndex(1000);
 
 let selectedIcon = null;
 let draw = null;
+let finishButton = null;
 
 // Evento al hacer clic en un icono
 const iconContainer = document.getElementById('icon-container');
@@ -761,13 +815,6 @@ clearButton.addEventListener('click', function () {
     vectorSource2.clear();
 });
 
-// Evento al hacer clic en el botón "Terminar Edición"
-const finishButton = document.getElementById('finishButton');
-finishButton.addEventListener('click', function () {
-    // Desactiva la interacción de dibujo
-    draw.setActive(false);
-});
-
 function addPointInteraction() {
     // Desactiva la interacción de dibujo si ya está activa
     if (draw) {
@@ -781,40 +828,64 @@ function addPointInteraction() {
     });
 
     draw.on('drawstart', function (event) {
+        const feature = event.feature;
         // Muestra el símbolo seleccionado en lugar de un punto
-        event.feature.setStyle(new ol.style.Style({
+        feature.setStyle(new ol.style.Style({
             image: new ol.style.Icon({
                 src: selectedIcon,
                 scale: 0.3,
             }),
         }));
-        event.feature.set('originalStyle', event.feature.getStyle());
+        feature.set('originalStyle', feature.getStyle());
+        feature.set('icon', selectedIcon);  // Guardar la URL del icono en la característica
     });
 
     map.addInteraction(draw);
+
+    // Crear y mostrar el botón "Terminar Edición"
+    if (!finishButton) {
+        finishButton = document.createElement('button');
+        finishButton.id = 'finishButton';
+        finishButton.innerText = 'Terminar Edición';
+        finishButton.style.position = 'absolute';
+        finishButton.style.top = '30px';
+        finishButton.style.left = '50px';
+        finishButton.style.zIndex = 10000;
+        finishButton.style.backgroundColor = '#19af89';
+        finishButton.style.color = 'white';
+        finishButton.style.border = 'none';
+        finishButton.style.padding = '10px';
+        finishButton.style.borderRadius = '10px';
+        finishButton.style.cursor = 'pointer';
+        document.getElementById('map').appendChild(finishButton);
+
+        // Evento al hacer clic en el botón "Terminar Edición"
+        finishButton.addEventListener('click', function () {
+            // Desactiva la interacción de dibujo
+            draw.setActive(false);
+            // Remueve el botón "Terminar Edición"
+            finishButton.remove();
+            finishButton = null;
+        });
+    }
 }
 
+//DESELECCIONAR  CAPAS------------
 
+// Evento al hacer clic en el botón "Deseleccionar Todos"
+const deselectButton = document.getElementById('deselectButton');
+deselectButton.addEventListener('click', function () {
+    if (selectedFeature) {
+        selectedFeature.setStyle(originalStyle);
+        selectedFeature = null;
+        originalStyle = null;
+       overlayCombinado.setPosition(undefined);
+    }
 
+});
 
+//fin---
 
-
-// Agrega la capa de MDE de AWS
-const elevationLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-      url: 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
-      crossOrigin: 'anonymous',
-      
-    }),
-
-    visible: false,
-    opacity: 0.4   
-  });
-  
-  // Agrega la capa de MDE al mapa
-  map.addLayer(elevationLayer);
-
-  
 
 
 
@@ -938,22 +1009,34 @@ function handleMapClick(evt) {
                 fieldValue1 = feature.get('Region');
                 fieldName2 = 'Área';
                 fieldValue2 = feature.get('Shape_Area');
-            }else if (layer === EspacioAereo) {
+            } else if (layer === EspacioAereo) {
                 layerTitle = 'Espacio Aéreo';
                 fieldName1 = 'Nombre';
                 fieldValue1 = feature.get('NOM_COMP');
                 fieldName2 = 'Region';
                 fieldValue2 = feature.get('REGION');
-            }else if(layer === 
-                AerodromosyHelipuertos ){
-                    layerTitle = 'Aerodromos y Helipuertos';
-                    fieldName1 = 'Tipo';
-                    fieldValue1 = feature.get('TIPO_AERÓ	');
-                    fieldName2 = 'Nombre';
-                    fieldValue2 = feature.get('NOMBRE');
+            } else if (layer === AerodromosyHelipuertos) {
+                layerTitle = 'Aerodromos y Helipuertos';
+                fieldName1 = 'Tipo';
+                fieldValue1 = feature.get('TIPO_AERÓ');
+                fieldName2 = 'Nombre';
+                fieldValue2 = feature.get('NOMBRE');
+            } else if (layer === vectorLayer2) {  // Capa de simbología
+                layerTitle = 'Simbolología';
+                fieldName1 = 'Coordenadas';
+                fieldValue1 = coordinates.map(coord => coord.toFixed(4)).join(', ');
+                fieldName2 = 'Icono';
+                var iconSrc = feature.get('icon');
+                fieldValue2 = `<img src="${iconSrc}" style="width: 50px; height: 50px;" />`;
+          
+            }else if (layer === Municipios) {
+                layerTitle = 'Municipios';
+                fieldName1 = 'Clave Municipal';
+                fieldValue1 = feature.get('CVE_MUN');
+                fieldName2 = 'Nombre';
+                fieldValue2 = feature.get('NOMGEO');
             }
-    
-            
+
             features = [{
                 layerTitle: layerTitle,
                 fieldName1: fieldName1,
@@ -998,8 +1081,6 @@ function handleMapClick(evt) {
 // Añadir el manejador de eventos al mapa
 map.on('singleclick', handleMapClick);
 
-
-
   //=========================FIN POPUPS======================================================
 
   
@@ -1035,8 +1116,163 @@ document.getElementById('btn-cargar-nombres').addEventListener('click', function
 
 
 
+        // Función para buscar direcciones o lugares usando Nominatim
+        function searchLocation(query) {
+            var url0 = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query);
+
+            fetch(url0)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Geocoding data:', data); // Registro de los datos recibidos
+                    if (data.length > 0) {
+                        var firstResult = data[0];
+                        var lon = parseFloat(firstResult.lon);
+                        var lat = parseFloat(firstResult.lat);
+                        var location = [lon, lat]; // Mantener en EPSG:4326
+
+                        // Mover la vista del mapa a la ubicación encontrada
+                        map.getView().setCenter(location);
+                        map.getView().setZoom(14);
+                    } else {
+                        alert('No se encontraron resultados para: ' + query);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Manejar el evento de clic del botón de búsqueda
+        document.getElementById('search-button').addEventListener('click', function() {
+            var query = document.getElementById('search-box').value;
+            if (query) {
+                searchLocation(query);
+            } else {
+                alert('Por favor, ingrese una dirección o lugar para buscar.');
+            }
+        });
 
 
+
+    // Crear la graticule (cuadrícula)
+    const graticule = new ol.layer.Graticule({
+        // La cuadrícula se dibuja por defecto en EPSG:4326
+        strokeStyle: new ol.style.Stroke({
+            color: 'rgba(0,0,0,0.8)',
+            width: 2,
+            lineDash: [0.5, 4]
+        }),
+        showLabels: true,
+        visible: false // Iniciar desactivada
+    });
+
+    // Añadir la graticule al mapa
+    map.addLayer(graticule);
+
+    // Manejar el evento de clic en la imagen para activar/desactivar la graticule
+    document.getElementById('graticule-button').addEventListener('click', function() {
+        graticule.setVisible(!graticule.getVisible());
+    });
+
+
+
+
+
+
+
+//SIMBOLOGIA======================================================
+
+// Aerodromos y helipuertos
+document.getElementById('AerodromosyHelipuertos').addEventListener('change', function() {
+    var imageContainer1 = document.getElementById('image-container1');
+    if (this.checked) {
+        imageContainer1.style.display = 'block';
+    } else {
+        imageContainer1.style.display = 'none';
+    }
+});
+//ESTADOS
+document.getElementById('Estatales').addEventListener('change', function() {
+    var imageContainer2 = document.getElementById('image-container2');
+    if (this.checked) {
+        imageContainer2.style.display = 'block';
+    } else {
+        imageContainer2.style.display = 'none';
+    }
+});
+//Regiones Aereas Militares
+document.getElementById('RegionesAereasMilitares').addEventListener('change', function() {
+    var imageContainer3 = document.getElementById('image-container3');
+    if (this.checked) {
+        imageContainer3.style.display = 'block';
+    } else {
+        imageContainer3.style.display = 'none';
+    }
+});
+
+//ESpacioAereo
+document.getElementById('EspacioAereo').addEventListener('change', function() {
+    var imageContainer4 = document.getElementById('image-container4');
+    if (this.checked) {
+        imageContainer4.style.display = 'block';
+    } else {
+        imageContainer4.style.display = 'none';
+    }
+});
+
+//Municipios
+document.getElementById('Municipios').addEventListener('change', function() {
+    var imageContainer5 = document.getElementById('image-container5');
+    if (this.checked) {
+        imageContainer5.style.display = 'block';
+    } else {
+        imageContainer5.style.display = 'none';
+    }
+});
+// Controlar la visibilidad de la imagen mediante la selección de un estado
+document.getElementById('estadoSelect').addEventListener('change', function() {
+    var imageContainer5 = document.getElementById('image-container5');
+    if (this.value !== "") {  // Verifica si se ha seleccionado alguna opción (que no sea la opción inicial vacía)
+        imageContainer5.style.display = 'block';  // Muestra la imagen
+    } else {
+        imageContainer5.style.display = 'none';  // Oculta la imagen si se selecciona la opción inicial vacía
+    }
+});
+
+//Volcanes
+document.getElementById('Volcanes').addEventListener('change', function() {
+    var imageContainer6 = document.getElementById('image-container6');
+    if (this.checked) {
+        imageContainer6.style.display = 'block';
+    } else {
+        imageContainer6.style.display = 'none';
+    }
+});
+//CurvasNivel
+document.getElementById('CurvasNivel').addEventListener('change', function() {
+    var imageContainer7 = document.getElementById('image-container7');
+    if (this.checked) {
+        imageContainer7.style.display = 'block';
+    } else {
+        imageContainer7.style.display = 'none';
+    }
+});
+//Aeropuertos
+document.getElementById('Aeropuertos').addEventListener('change', function() {
+    var imageContainer8 = document.getElementById('image-container8');
+    if (this.checked) {
+        imageContainer8.style.display = 'block';
+    } else {
+        imageContainer8.style.display = 'none';
+    }
+});
+//CurvasNivel
+document.getElementById('AeropuertosMilitares').addEventListener('change', function() {
+    var imageContainer9 = document.getElementById('image-container9');
+    if (this.checked) {
+        imageContainer9.style.display = 'block';
+    } else {
+        imageContainer9.style.display = 'none';
+    }
+});
 
 
 
@@ -1272,6 +1508,11 @@ function printMap() {
         printWindow.document.close();
     });
 }
+
+
+
+
+
 
 
 

@@ -52,10 +52,13 @@
             <div id="contenido-herramientas">
            <!--"Acervo"-->     
                 <div id="contenido-1">
+                    <div class="search-container">
+                        <input type="text" id="search-box" placeholder="Buscar dirección o lugar">
+                        <button id="search-button">Buscar</button>
+                    </div>
+
 
                 <div id="capas">
-
-
                     <div id="layer-switcher" >
 
                         <div class="wrap-collabsible"> <input id="collapsible1" class="toggle"type="checkbox" style="display: none;">
@@ -77,11 +80,46 @@
                                     <input type="checkbox" id="EspacioAereo">
                                     <label for="EspacioAereo">Espacio Aéreo</label>
                                         <br>
-                                        <input type="checkbox" id="Municipios">
-                                        <label for="Municipios">Municipios</label>
-                                        <div id="loading" >
-                                            Cargando...
-                                        </div>
+                                        <div id="check">
+                                        <input type="checkbox" id="Municipios" style="display: none;" >
+                                        <label id="labelmun"  >Municipios</label>
+                                    </div>
+                                         
+                                        <select id="estadoSelect">
+        <option value="">Seleccione un estado</option>
+        <option value="01">Aguascalientes</option>
+        <option value="02">Baja California</option>
+        <option value="03">Baja California Sur</option>
+        <option value="04">Campeche</option>
+        <option value="05">Coahuila de Zaragoza</option>
+        <option value="06">Colima</option>
+        <option value="07">Chiapas</option>
+        <option value="08">Chihuahua</option>
+        <option value="09">Ciudad de México</option>
+        <option value="10">Durango</option>
+        <option value="11">Guanajuato</option>
+        <option value="12">Guerrero</option>
+        <option value="13">Hidalgo</option>
+        <option value="14">Jalisco</option>
+        <option value="15">México</option>
+        <option value="16">Michoacán de Ocampo</option>
+        <option value="17">Morelos</option>
+        <option value="18">Nayarit</option>
+        <option value="19">Nuevo León</option>
+        <option value="20">Oaxaca</option>
+        <option value="21">Puebla</option>
+        <option value="22">Querétaro</option>
+        <option value="23">Quintana Roo</option>
+        <option value="24">San Luis Potosí</option>
+        <option value="25">Sinaloa</option>
+        <option value="26">Sonora</option>
+        <option value="27">Tabasco</option>
+        <option value="28">Tamaulipas</option>
+        <option value="29">Tlaxcala</option>
+        <option value="30">Veracruz de Ignacio de la Llave</option>
+        <option value="31">Yucatán</option>
+        <option value="32">Zacatecas</option>
+    </select>
 
                                     </div>
                                 </div>
@@ -101,17 +139,12 @@
                             <input type="checkbox" id="CurvasNivel">
                             <label for="CurvasNivel">Curvas de Nivel</label>
                                 <br>
-                            <label for="alturaInput">Alturas mayores a (m):</label>
-                            <input type="number" id="alturaInput" value="3000">
+                            <label for="alturaInput">Alturas mayores a :</label>
+                            <input type="number" id="alturaInput" placeholder="Altura en metros ej:2000">
                         
                             <!-- Botones para aplicar el filtro a la capa existente y para crear una nueva capa filtrada -->
                             <button id="aplicarFiltro">Aplicar Filtro</button>
-                            <div>
-                                <input type="checkbox" id="elevationLayer" >
-                                <label for="elevationLayer">Modelo Digital de Elevaciones</label>
-                                <br>
                         
-                            </div>
                                 </div>
                             </div>
                        </div>
@@ -166,15 +199,16 @@
          </div>
                     
                 </div>
+                <!-- Aqui va  la graticula y herramienta para nubes-->
                 <div id="MDE"  >
                 
                    
 
                      <div id="mde"> 
-                      
                         <img class="Borde" id="myImage" src="./Imagenes/Nubes.png" alt="Imagen">
+                        
                       </div>
-
+                      <img id="graticule-button" src="Imagenes/Reticula.jpg" alt="Show Graticule" title="Show Graticule">
 
                 </div>
 
@@ -257,9 +291,38 @@
             <div id="popup-combinado" class="ol-popup">
                 <div id="popup-combinado-content"></div>
             </div>
-            
-            
-
+  
+            <div  id="simbologias">
+                
+                <div id="image-container1" style="display: none;">
+                    <img src="./ICONOS/S (1).png" >
+                </div>
+                <div id="image-container2" style="display: none;">
+                    <img src="./ICONOS/S (2).png" >
+                </div>
+                <div id="image-container3" style="display: none;">
+                    <img src="./ICONOS/S (3).png" >
+                </div>
+                <div id="image-container4" style="display: none;">
+                    <img src="./ICONOS/S (4).png" >
+                </div>
+                <div id="image-container5" style="display: none;">
+                    <img src="./ICONOS/S (5).png" >
+                </div>
+                <div id="image-container6" style="display: none;">
+                    <img src="./ICONOS/S (6).png" >
+                </div>
+                <div id="image-container7" style="display: none;">
+                    <img src="./ICONOS/S (7).png" >
+                </div>
+                <div id="image-container8" style="display: none;">
+                    <img src="./ICONOS/S (8).png" >
+                </div>
+                <div id="image-container9" style="display: none;">
+                    <img src="./ICONOS/S (9).png" >
+                </div>
+                
+        </div>
         </div>
   
       
@@ -407,7 +470,7 @@
                
             
 
-            <button id="finishButton">Terminar Edición</button>
+           
 
             <button id="clearButton">Limpiar Capa</button>
     </div>

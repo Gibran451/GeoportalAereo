@@ -88,13 +88,13 @@ margin-right: 10px !important;
 #panel-herramientas{
     height: 6%;
     width: 93%;
-    background-color:#274c83;
+    background-color:#1a2f4e;
    margin-right: 10px;
    margin-left: 5px;
    margin-bottom: 10px;
     padding: 5px;
     border-radius: 10px;
-    display: in;
+    display: inline-block;
     justify-content: center;
     align-items: center;
     position: flex;
@@ -127,6 +127,11 @@ margin-right: 10px !important;
     overflow: auto;
     background-color: #466848;
 
+}
+
+#layer-switcher{
+
+    padding-top: 10px;
 }
 
 
@@ -190,11 +195,11 @@ display: inline-block;
     background-color: #1a2f4e;
     display: flex;
     overflow: auto;
-    height: 75% ;
+    height: 64.5% ;
     position: flex;
     margin-left: 3%;
     margin-right: 3%;
-    margin-top: 10px;
+    margin-top: 0px;
     margin-bottom: 5px;
     
 }
@@ -315,6 +320,7 @@ display: inline-block;
     position: absolute;
     top: 50px; /* Posiciona el botón en la parte superior del contenedor */
     right: 10px; /* Posiciona el botón a la derecha del contenedor */
+    display: flex;
     border-radius: 50%;
     border: none;
     width: 35px;
@@ -323,7 +329,7 @@ display: inline-block;
     font-size: 24px;
     background-color: #f8f9fa;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    display: flex;
+
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Asegura que el botón esté por encima del mapa */
@@ -517,7 +523,7 @@ width: 45%;
  .ol-popup {
     display: none;
     position: absolute;
-    background-color: #19af89ab;
+    background-color: #19af89be;
     color: white;
     padding: 15px;
     border-radius: 10px;
@@ -635,3 +641,101 @@ color: #1a2f4e;
 }
 
 
+.search-container {
+    margin:10px; 
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background: #1a2f4e;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    height: 25px;
+}
+
+#search-box{
+    background:white;
+    border-radius: 7px;
+    border-color: white;
+    height: 20px;
+    color: #1a2f4e;
+    width: 65%;
+}
+#search-button{
+background-color: #19af8a;
+border-radius: 7px;
+width: 27%;
+color: white;
+height: 28px;
+
+}
+
+
+
+#graticule-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    color: #19af8a;
+    border-radius: 10px;
+    cursor: pointer;
+    height: 87%;
+margin-top: -1%;
+    width: 42%;
+}
+
+#graticule-button:hover {
+    transform: scale(1.1);
+}
+
+
+#check{
+    display: flex;
+    margin-bottom: 8px;
+    margin-top: 5px;
+
+}
+#aplicarFiltro{
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px;
+    border-color: rgba(255, 255, 255, 0);
+}
+#aplicarFiltro:hover{
+ background-color: #1a2f4e;
+ color: rgb(255, 255, 255);
+
+}
+
+
+
+#simbologias{
+    position: absolute;
+    z-index: 10000;
+top: 100px;
+right: 20px;
+
+}
+#image-container {
+   
+    display: none;
+
+    flex-direction: column;
+
+
+    width: 100%;
+    height: auto;
+
+}
+#image-container {
+   
+    display: none;
+
+    flex-direction: column;
+
+
+    width: 100%;
+    height: auto;
+
+}
