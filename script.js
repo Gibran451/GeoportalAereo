@@ -501,11 +501,124 @@ var bounds = ol.proj.transformExtent([-121.35, 9.5, -83.94, 32.65], 'EPSG:4326',
     visible:false
 });
 
+// Definir variables para capas WMS externos
+const lightningLayer = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://nowcoast.noaa.gov/geoserver/observations/lightning_detection/ows?',
+      params: {
+        'LAYERS': 'ldn_lightning_strike_density',  // Nombre de la capa WMS
+        'TILED': true,
+        'VERSION': '1.3.0',
+        'FORMAT': 'image/png',
+      },
+      serverType: 'geoserver',
+      }),
+      visible: false // Inicialmente la capa estará apagada
+    });
 
 
+    //Tropical_Cyclone_Heat_Potential
+    const tchpLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: 'https://cwcgom.aoml.noaa.gov/thredds/wms/TCHP/TCHP.nc?',
+          params: {
+            'LAYERS': 'Tropical_Cyclone_Heat_Potential',  // Nombre de la capa WMS
+            'TILED': true,
+            'VERSION': '1.3.0',
+            'FORMAT': 'image/png',
+          },
+          serverType: 'geoserver',
+        }),
+        visible: false // Inicialmente la capa estará apagada
+      });
+  
+//metar
+
+const observationsLayer = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://ogcie.iblsoft.com/observations?',
+      params: {
+        'LAYERS': 'metar',  // Ajusta el nombre de la capa a mostrar
+        'TILED': true,
+        'VERSION': '1.3.0',
+        'FORMAT': 'image/png',
+      },
+      serverType: 'geoserver',
+    }),
+    visible: false // Inicialmente la capa estará apagada
+  });
 
 
-// Añadir las capas al mapa
+  
+const synoptic= new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://ogcie.iblsoft.com/observations?',
+      params: {
+        'LAYERS': 'synoptic',  // Ajusta el nombre de la capa a mostrar
+        'TILED': true,
+        'VERSION': '1.3.0',
+        'FORMAT': 'image/png',
+      },
+      serverType: 'geoserver',
+    }),
+    visible: false // Inicialmente la capa estará apagada
+  });
+
+  const P_atmos= new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://ogcie.iblsoft.com/observations?',
+      params: {
+        'LAYERS': 'msl-pressure-objective-analysis',  // Ajusta el nombre de la capa a mostrar
+        'TILED': true,
+        'VERSION': '1.3.0',
+        'FORMAT': 'image/png',
+      },
+      serverType: 'geoserver',
+    }),
+    visible: false // Inicialmente la capa estará apagada
+  });
+
+  const goes_long = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://nowcoast.noaa.gov/geoserver/observations/satellite/ows?',
+      params: {
+        'LAYERS': 'goes_longwave_imagery',  // Ajusta el nombre de la capa a mostrar
+        'TILED': true,
+        'VERSION': '1.3.0',
+        'FORMAT': 'image/png'
+      },
+      serverType: 'geoserver',
+    }),
+    opacity: 0.6,  // Opacidad aquí, a nivel de la capa
+    visible: false // Inicialmente la capa estará apagada
+  });
+  
+  const goes_vis = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://nowcoast.noaa.gov/geoserver/observations/satellite/ows?',
+      params: {
+        'LAYERS': 'goes_visible_imagery',  // Ajusta el nombre de la capa a mostrar
+        'TILED': true,
+        'VERSION': '1.3.0',
+        'FORMAT': 'image/png'
+      },
+      serverType: 'geoserver',
+    }),
+    opacity: 0.6,  // Opacidad aquí, a nivel de la capa
+    visible: false // Inicialmente la capa estará apagada
+  });
+  
+
+
+  const vectorLayer11= new ol.layer.Vector({
+    source: new ol.source.Vector({
+        url: 'https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer/3/query?where=3%3D1&outFields=*&f=geojson',
+        format: new ol.format.GeoJSON()
+    })
+});
+
+// Añadir la capa vectorial al mapa
+map.addLayer(vectorLayer11);
 
 map.addLayer(EspacioAereo);
 map.addLayer(RegionesAereasMilitares);
@@ -518,6 +631,14 @@ map.addLayer(CurvasNivel);
 map.addLayer(imageLayer);
 map.addLayer(AeropuertosMilitares);
 map.addLayer(Aeropuertos);
+map.addLayer(lightningLayer);
+map.addLayer(tchpLayer);
+map.addLayer(observationsLayer);
+map.addLayer(synoptic);
+
+map.addLayer(P_atmos);
+map.addLayer(goes_long);
+map.addLayer(goes_vis);
 
 // Posicion de las capas en z
 
@@ -536,6 +657,36 @@ AeropuertosMilitares.setZIndex(10);
 
 
 // Funcion Swicher  de las capas
+//WMS EXTERNOS
+document.getElementById('toggleLayer').addEventListener('change', function() {
+    lightningLayer.setVisible(this.checked);
+  });
+
+
+  document.getElementById('toggleLayer2').addEventListener('change', function() {
+    tchpLayer.setVisible(this.checked);
+  });
+
+
+  document.getElementById('toggleLayer3').addEventListener('change', function() {
+    observationsLayer.setVisible(this.checked);
+  });
+
+  document.getElementById('toggleLayer4').addEventListener('change', function() {
+    synoptic.setVisible(this.checked);
+  });
+
+  document.getElementById('toggleLayer5').addEventListener('change', function() {
+    P_atmos.setVisible(this.checked);
+  });
+
+  document.getElementById('toggleLayer6').addEventListener('change', function() {
+    goes_long.setVisible(this.checked);
+  });
+
+  document.getElementById('toggleLayer7').addEventListener('change', function() {
+    goes_vis.setVisible(this.checked);
+  });
 
 
 document.getElementById('ZonasUrbanas').addEventListener('change', function() {
@@ -848,8 +999,8 @@ function addPointInteraction() {
         finishButton.id = 'finishButton';
         finishButton.innerText = 'Terminar Edición';
         finishButton.style.position = 'absolute';
-        finishButton.style.top = '30px';
-        finishButton.style.left = '50px';
+        finishButton.style.top = '65px';
+        finishButton.style.left = '10px';
         finishButton.style.zIndex = 10000;
         finishButton.style.backgroundColor = '#19af89';
         finishButton.style.color = 'white';

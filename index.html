@@ -26,6 +26,17 @@
 
 
     <div id="header">
+        <div class="menu">
+            <div id="panel-herramientas">
+            
+                <button class="myButton" onclick="cambiarContenido(1)">Acervo</button>
+                <button id="boton_h" class="myButton" onclick="cambiarContenido(2)">Herramientas</button>
+                <button class="myButton" onclick="cambiarEstructura()">Visor</button>
+    
+            </div>
+        </div>
+       
+
         <div class="exportar">
 
              <button id="download-btn" > Descargar Imagen</button>
@@ -41,25 +52,16 @@
 
     </div>
     <div id="container">
+       
         <div id="herramientas">
-            <div id="panel-herramientas">
-            
-                <button class="myButton" onclick="cambiarContenido(1)">Acervo</button>
-                <button id="boton_h" class="myButton" onclick="cambiarContenido(2)">Herramientas</button>
-                <button class="myButton" onclick="cambiarEstructura()">Visor</button>
-
-            </div>
+        
             <div id="contenido-herramientas">
            <!--"Acervo"-->     
                 <div id="contenido-1">
-                    <div class="search-container">
-                        <input type="text" id="search-box" placeholder="Buscar dirección o lugar">
-                        <button id="search-button">Buscar</button>
-                    </div>
+                    
 
 
                 <div id="capas">
-                    <div id="layer-switcher" >
 
                         <div class="wrap-collabsible"> <input id="collapsible1" class="toggle"type="checkbox" style="display: none;">
                             <label for="collapsible1" class="lbl-toggle" tabindex="0">Espacio Geográfico </label>
@@ -173,7 +175,7 @@
                             </div>
                         </div>
                    </div>
-              </div>
+          
                         
                   
               <div class="wrap-collabsible"> <input id="collapsible4" class="toggle"type="checkbox" style="display: none;">
@@ -199,20 +201,83 @@
          </div>
                     
                 </div>
+           
                 <!-- Aqui va  la graticula y herramienta para nubes-->
                 <div id="MDE"  >
-                
-                   
+                    <img class="imagenes-boton" id="myImage" src="./Imagenes/Nubes.png" alt="Imagen">
+                    <img class="imagenes-boton" id="graticule-button" src="Imagenes/Reticula.jpg" alt="Show Graticule" title="Show Graticule">
+                    <img class="imagenes-boton" id="myImage" src="./Imagenes/Nubes.png" alt="Imagen">
+                </div>
+                <div id="wms-externos">
 
-                     <div id="mde"> 
-                        <img class="Borde" id="myImage" src="./Imagenes/Nubes.png" alt="Imagen">
-                        
-                      </div>
-                      <img id="graticule-button" src="Imagenes/Reticula.jpg" alt="Show Graticule" title="Show Graticule">
+
+                    <div class="wrap-collabsible"> <input id="collapsible5" class="toggle2"type="checkbox" style="display: none;">
+                        <label for="collapsible5" class="lbl-toggle2" tabindex="0">Clima</label>
+                        <div class="collapsible-content">
+                            <div class="content-inner">
+                             
+                                <div class="Layers">
+                                    <label>
+                                        <input type="checkbox" id="toggleLayer"  > Detección de rayos derivada
+                                      </label>
+                                                
+                                            <br>
+                                            <label>
+                                                <input type="checkbox" id="toggleLayer2"> Potencial de calor de los ciclones tropicales
+                                              </label>
+        
+                                </div>
+                            </div>
+                         </div>
+                      </div>     
+            
+                  <div class="wrap-collabsible"> <input id="collapsible6" class="toggle2"type="checkbox" style="display: none;">
+                    <label for="collapsible6" class="lbl-toggle2" tabindex="0">Observaciones </label>
+                    <div class="collapsible-content">
+                        <div class="content-inner">
+                         
+                            <div class="Layers">
+                               
+                                <label>
+                                    <input type="checkbox" id="toggleLayer3"> METAR
+                                  </label>
+                                        <br>
+                                        <label>
+                                            <input type="checkbox" id="toggleLayer4"> synoptic
+                                          </label>
+                                          <br>
+                                          <label>
+                                              <input type="checkbox" id="toggleLayer5"> Presión Atmosferica
+                                            </label>
+                            </div>
+                        </div>
+                     </div>
+                </div>  
+
+                <div class="wrap-collabsible"> <input id="collapsible7" class="toggle2"type="checkbox" style="display: none;">
+                    <label for="collapsible7" class="lbl-toggle2" tabindex="0">Satelite </label>
+                    <div class="collapsible-content">
+                        <div class="content-inner">
+                         
+                            <div class="Layers">
+                               
+                                <label>
+                                    <input type="checkbox" id="toggleLayer6"> GOES Longwave
+                                  </label>
+                                        <br>
+                                        <label>
+                                            <input type="checkbox" id="toggleLayer7"> GOES Visible
+                                          </label>
+    
+                            </div>
+                        </div>
+                     </div>
+                </div>  
+
+
 
                 </div>
-
-                </div>
+     </div>
              
            <!-- "Herramientas"-->
                  <div id="contenido-2">
@@ -287,6 +352,12 @@
             <button id="zoomMexicoBtn" class="zoom-mexico-btn" title="Hacer zoom a México">
                 <img src="./Imagenes/mx.png" alt="México" style="width: 25px; height: auto;">
             </button>
+
+            <div class="search-container">
+                <input type="text" id="search-box" placeholder="Buscar dirección o lugar">
+                <button id="search-button">Buscar</button>
+            </div>
+
 
             <div id="popup-combinado" class="ol-popup">
                 <div id="popup-combinado-content"></div>
